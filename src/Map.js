@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Mapbox, {NavigationControl} from 'react-map-gl';
+import ReactMapGL, {NavigationControl} from 'react-map-gl';
 
 const token = 'pk.eyJ1Ijoic3RlZmFuaGsiLCJhIjoiY2psOGdxc3R0M2lycjN4cXA5NTV2YThtbCJ9.xg_1D6ILRexNe7jHQ503mw';
 
@@ -23,11 +23,11 @@ class Map extends Component {
         const { viewport } = this.state;
 
         return (
-            <Mapbox {...viewport} mapStyle='mapbox://styles/mapbox/streets-v9' mapboxApiAccessToken={token}>
+            <ReactMapGL {...viewport} mapStyle='mapbox://styles/mapbox/streets-v9' mapboxApiAccessToken={token} onViewportChange={(viewport) => this.setState({viewport})}>
                 <div className="nav">
                     <NavigationControl />
                 </div>
-            </Mapbox>
+            </ReactMapGL>
 
         );
 
