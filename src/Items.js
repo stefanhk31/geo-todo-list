@@ -11,7 +11,8 @@ class Items extends Component {
     }
     
     render() {
-        const todoEntries = this.props.items;
+        const todoEntries = this.props.list.items; //why is this undefined????
+        console.log(todoEntries)
         const listItems = todoEntries.map(this.createTasks)
         return (
         <ul className="list">
