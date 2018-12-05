@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import ReactMapGL, { NavigationControl } from 'react-map-gl';
-import dotenv from 'dotenv';
 
-const token = dotenv.config(process.env.REACT_APP_API_KEY);
+const token = process.env.REACT_APP_API_KEY;
 
 class Map extends Component {
     constructor(props) {
