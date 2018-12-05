@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ReactMapGL, {NavigationControl} from 'react-map-gl';
+import ReactMapGL, { NavigationControl } from 'react-map-gl';
 
-const token = 'pk.eyJ1Ijoic3RlZmFuaGsiLCJhIjoiY2psOGdxc3R0M2lycjN4cXA5NTV2YThtbCJ9.xg_1D6ILRexNe7jHQ503mw';
+const token = process.env.REACT_APP_API_KEY;
 
 class Map extends Component {
     constructor(props) {
@@ -17,15 +17,19 @@ class Map extends Component {
         };
     }
 
-    
+
 
     render() {
         const { viewport } = this.state;
 
+        const updateViewport = (viewport) => {
+            this.setState({ viewport })
+        };
+
         return (
-            <ReactMapGL {...viewport} mapStyle='mapbox://styles/mapbox/streets-v9' mapboxApiAccessToken={token} onViewportChange={(viewport) => this.setState({viewport})}>
+            <ReactMapGL {...viewport} mapStyle='mapbox://styles/mapbox/streets-v9' mapboxApiAccessToken={token} onViewportChange={updateViewport}>
                 <div className="nav">
-                    <NavigationControl />
+                    <NavigationControl onViewportChange={updateViewport} />
                 </div>
             </ReactMapGL>
 
