@@ -5,12 +5,14 @@
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "^2.3.0",
     "@types/react-map-gl": "^4.0.0",
+    "deck.gl": "^6.3.1",
     "dotenv": "^6.2.0",
     "mapbox-gl": "^0.52.0-beta.1",
     "mapbox-gl-geocoder": "^2.0.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-map-gl": "^4.0.2",
+    "react-map-gl-geocoder": "^1.5.6",
     "react-scripts": "2.1.1"
   },
   "scripts": {

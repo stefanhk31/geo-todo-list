@@ -4,10 +4,11 @@ import Items from './Items';
 import Map from './Map';
 import './App.scss';
 
-//geolocation: (1) get user loc; (2) allow user to set loc--store spec locs in variables? (3) make spec locs conn to diff list items (4) make list render depending on which loc is obtained 
+//How to convert "location" field in List.js to geocoded coordinates?
 
 const initItem = {
   text: '',
+  location: '',
   key: ''
 };
 
@@ -16,10 +17,8 @@ class App extends Component {
     super(props);
     this.state = {
       items: [],
-      currentItem: initItem,
-      location: ''
+      currentItem: initItem
     }
-    this.inputElement = React.createRef();
   }
 
   handleInput = e => {
@@ -33,10 +32,18 @@ class App extends Component {
     });
   }
 
+  setLocation = e => {
+    const location = e.target.value;
+      this.setState({
+        currentItem: {
+          location: location
+        }
+      })
+    }
+
   addItem = e => {
     e.preventDefault();
     const newItem = this.state.currentItem;
-    console.log(newItem)
     if (newItem.text !== '') {
       const items = [...this.state.items, newItem]
       this.setState({
@@ -58,7 +65,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <List addItem={this.addItem} inputElement={this.inputElement} handleInput={this.handleInput} currentItem={this.state.currentItem} />
+        <List addItem={this.addItem} inputTextElement={this.inputTextElement} inputLocElement={this.inputLocElement} handleInput={this.handleInput} currentItem={this.state.currentItem} location={this.state.location}/>
         <Items items={this.state.items} deleteItem={this.deleteItem} />
         <Map />
       </div>
