@@ -30,7 +30,6 @@ class Map extends Component {
                 (position) => {
                     const userLatitude = position.coords.latitude
                     const userLongitude = position.coords.longitude
-                    
                     this.setState({
                         viewport: {
                             ...initViewport,

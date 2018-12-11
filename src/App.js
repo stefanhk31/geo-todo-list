@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import List from './List';
 import Items from './Items';
 import Map from './Map';
+import MapboxClient from "mapbox/lib/services/geocoding";
 import './App.scss';
+
+const token = process.env.REACT_APP_API_KEY;
 
 const initItem = {
   text: '',
   location: '',
   key: ''
 };
+
+const mapboxClient = new MapboxClient(token);
 
 class App extends Component {
   constructor(props) {
@@ -46,6 +51,7 @@ class App extends Component {
   addItem = e => {
     e.preventDefault();
     const newItem = this.state.currentItem;
+    const itemLoc = this.state.currentItem.location;
     if (newItem.text !== '') {
       const items = [...this.state.items, newItem]
       this.setState({
@@ -53,6 +59,9 @@ class App extends Component {
         currentItem: initItem
       })
     }
+    mapboxClient.geocodeForward(itemLoc, function() {
+      console.log(itemLoc)
+    });
   }
 
   deleteItem = key => {
