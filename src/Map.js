@@ -5,22 +5,43 @@ import Geocoder from "react-map-gl-geocoder";
 
 const token = process.env.REACT_APP_API_KEY;
 
+const initViewport = {
+        latitude: 0,
+        longitude: 0,
+        zoom: 12,
+        width: 500,
+        height: 500
+}
+
 class Map extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            viewport: {
-                latitude: 35.9555072,
-                longitude: -83.9901184,
-                zoom: 12,
-                width: 500,
-                height: 500
-            },
+            viewport: initViewport,
             searchResultLayer: null
         };
     }
 
     mapRef = React.createRef()
+
+    componentDidMount() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLatitude = position.coords.latitude
+                    const userLongitude = position.coords.longitude
+                    
+                    this.setState({
+                        viewport: {
+                            ...initViewport,
+                            latitude: userLatitude,
+                            longitude: userLongitude, 
+                        }
+                    })
+                }
+            )
+        }
+    }
 
     handleOnResult = e => {
         this.setState({

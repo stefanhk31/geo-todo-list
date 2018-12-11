@@ -4,8 +4,6 @@ import Items from './Items';
 import Map from './Map';
 import './App.scss';
 
-//How to convert "location" field in List.js to geocoded coordinates?
-
 const initItem = {
   text: '',
   location: '',
@@ -21,10 +19,11 @@ class App extends Component {
     }
   }
 
-  handleInput = e => {
+  setItem = e => {
     const itemText = e.target.value;
     const currentItem = {
       text: itemText,
+      location: '',
       key: Date.now()
     }
     this.setState({
@@ -34,10 +33,13 @@ class App extends Component {
 
   setLocation = e => {
     const location = e.target.value;
+    const currentItem = {
+      text: this.state.currentItem.text,
+      location: location,
+      key: this.state.currentItem.key
+    }
       this.setState({
-        currentItem: {
-          location: location
-        }
+        currentItem: currentItem
       })
     }
 
@@ -65,7 +67,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <List addItem={this.addItem} inputTextElement={this.inputTextElement} inputLocElement={this.inputLocElement} handleInput={this.handleInput} currentItem={this.state.currentItem} location={this.state.location}/>
+        <List addItem={this.addItem} setItem={this.setItem} setLocation={this.setLocation} currentItem={this.state.currentItem}/>
         <Items items={this.state.items} deleteItem={this.deleteItem} />
         <Map />
       </div>
