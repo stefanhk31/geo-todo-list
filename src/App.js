@@ -3,6 +3,7 @@ import List from './List';
 import Items from './Items';
 import Map from './Map';
 import MapboxClient from "mapbox/lib/services/geocoding";
+import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
 import './App.scss';
 
 const token = process.env.REACT_APP_API_KEY;
@@ -59,8 +60,14 @@ class App extends Component {
         currentItem: initItem
       })
     }
-    mapboxClient.geocodeForward(itemLoc, function() {
-      console.log(itemLoc)
+    mapboxClient.geocodeForward(itemLoc, function(err, res) {
+      var itemCoords = res.features[0].geometry.coordinates;
+      var map = document.getElementById("map");
+
+      new mapboxgl.Marker(Map)
+        .setLngLat(itemCoords)
+        .addTo(map); 
+
     });
   }
 

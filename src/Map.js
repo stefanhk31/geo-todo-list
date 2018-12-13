@@ -64,7 +64,7 @@ class Map extends Component {
 
         return (
             <div className="map-container">
-                <MapGL {...viewport} ref={this.mapRef} mapStyle='mapbox://styles/mapbox/streets-v9' mapboxApiAccessToken={token} onViewportChange={updateViewport}>
+                <MapGL id="map" {...viewport} ref={this.mapRef} mapStyle='mapbox://styles/mapbox/streets-v9' mapboxApiAccessToken={token} onViewportChange={updateViewport}>
                     <div className="nav">
                         <NavigationControl onViewportChange={updateViewport} />
                     </div>
