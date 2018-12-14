@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import List from './List';
-import Items from './Items';
-import Map from './Map';
+
+// Import components
+import ItemInput from './containers/item-input/ItemInput';
+import Map from './containers/map/Map';
+import List from './components/list/List';
+
 import MapboxClient from "mapbox/lib/services/geocoding";
-import './App.scss';
 
 const token = process.env.REACT_APP_API_KEY;
 
@@ -24,60 +26,40 @@ class App extends Component {
     }
   }
 
-  setItem = e => {
-    const itemText = e.target.value;
-    const currentItem = {
-      text: itemText,
-      location: '',
-      key: Date.now()
-    }
+  handleAddItem = item => {
+    const items = [...this.state.items, item];
+    const currentItem = {...item};
+
+    // update state with new item
     this.setState({
-      currentItem: currentItem
+      items,
+      currentItem,
     });
-  }
 
-  setLocation = e => {
-    const location = e.target.value;
-    const currentItem = {
-      text: this.state.currentItem.text,
-      location: location,
-      key: this.state.currentItem.key
-    }
-      this.setState({
-        currentItem: currentItem
-      })
-    }
-
-  addItem = e => {
-    e.preventDefault();
-    const newItem = this.state.currentItem;
-    const itemLoc = this.state.currentItem.location;
-    if (newItem.text !== '') {
-      const items = [...this.state.items, newItem]
-      this.setState({
-        items: items,
-        currentItem: initItem
-      })
-    }
+    const itemLoc = item.location;
     mapboxClient.geocodeForward(itemLoc, function() {
       console.log(itemLoc)
     });
   }
 
-  deleteItem = key => {
-    const filteredItems = this.state.items.filter(item => {
-      return item.key !== key
-    })
+  handleDeleteItem = key => {
+    const items = this.state.items.filter(item => item.key !== key);
+
     this.setState({
-      items: filteredItems
-    })
+      items,
+    });
   }
 
   render() {
     return (
       <div className="App">
-        <List addItem={this.addItem} setItem={this.setItem} setLocation={this.setLocation} currentItem={this.state.currentItem}/>
-        <Items items={this.state.items} deleteItem={this.deleteItem} />
+        <ItemInput onAddItem={this.handleAddItem} />
+
+        <List
+          items={this.state.items}
+          onDeleteItem={this.handleDeleteItem}
+        />
+
         <Map />
       </div>
     );
