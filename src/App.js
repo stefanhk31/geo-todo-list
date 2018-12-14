@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import List from './List';
-import Items from './Items';
-import Map from './Map';
+
+// Import components
+import ItemInput from './containers/item-input/ItemInput';
+import Map from './containers/map/Map';
+import List from './components/list/List';
 import MapboxClient from "mapbox/lib/services/geocoding";
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
 import './App.scss';
@@ -25,15 +27,14 @@ class App extends Component {
     }
   }
 
-  setItem = e => {
-    const itemText = e.target.value;
-    const currentItem = {
-      text: itemText,
-      location: '',
-      key: Date.now()
-    }
+  handleAddItem = item => {
+    const items = [...this.state.items, item];
+    const currentItem = {...item};
+
+    // update state with new item
     this.setState({
-      currentItem: currentItem
+      items,
+      currentItem,
     });
   }
 
@@ -60,31 +61,35 @@ class App extends Component {
         currentItem: initItem
       })
     }
-    mapboxClient.geocodeForward(itemLoc, function(err, res) {
+    /* mapboxClient.geocodeForward(itemLoc, function(err, res) {
       var itemCoords = res.features[0].geometry.coordinates;
       var map = document.getElementById("map");
 
-      new mapboxgl.Marker(Map)
+      /*new mapboxgl.Marker(Map)
         .setLngLat(itemCoords)
-        .addTo(map); 
+        .addTo(map);
 
-    });
+    }); */
   }
 
-  deleteItem = key => {
-    const filteredItems = this.state.items.filter(item => {
-      return item.key !== key
-    })
+  handleDeleteItem = key => {
+    const items = this.state.items.filter(item => item.key !== key);
+
     this.setState({
-      items: filteredItems
-    })
+      items,
+    });
   }
 
   render() {
     return (
       <div className="App">
-        <List addItem={this.addItem} setItem={this.setItem} setLocation={this.setLocation} currentItem={this.state.currentItem}/>
-        <Items items={this.state.items} deleteItem={this.deleteItem} />
+        <ItemInput onAddItem={this.handleAddItem} />
+
+        <List
+          items={this.state.items}
+          onDeleteItem={this.handleDeleteItem}
+        />
+
         <Map />
       </div>
     );
