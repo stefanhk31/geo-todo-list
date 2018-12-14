@@ -9,8 +9,8 @@ const initViewport = {
   latitude: 0,
   longitude: 0,
   zoom: 12,
-  width: 500,
-  height: 500
+  width: window.innerWidth,
+  height: window.innerHeight
 }
 
 class Map extends Component {
@@ -71,9 +71,9 @@ class Map extends Component {
             mapboxApiAccessToken={token}
             onViewportChange={updateViewport}
           >
-            <div className="nav">
+            {/* <div className="nav">
               <NavigationControl onViewportChange={updateViewport} />
-            </div>
+      </div> */}
 
             <div className="geocoder">
               <Geocoder
@@ -85,14 +85,14 @@ class Map extends Component {
               />
             </div>
 
-            <Marker
+           {/* <Marker
               latitude={35.95}
               longitude={-83.99}
               offsetLeft={-20}
               offsetTop={-10}
             >
               <div><i className="fa fa-map-marker" aria-hidden="true"></i></div>
-            </Marker>
+           </Marker> */}
 
             <DeckGL
               {...viewport}

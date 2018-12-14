@@ -6,7 +6,6 @@ import Map from './containers/map/Map';
 import List from './components/list/List';
 import MapboxClient from "mapbox/lib/services/geocoding";
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
-//import './App.scss';
 
 const token = process.env.REACT_APP_API_KEY;
 
@@ -83,13 +82,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ItemInput onAddItem={this.handleAddItem} />
-
-        <List
-          items={this.state.items}
-          onDeleteItem={this.handleDeleteItem}
-        />
-
+        <div className="todo-container">
+          <ItemInput onAddItem={this.handleAddItem} />
+          <List
+            items={this.state.items}
+            onDeleteItem={this.handleDeleteItem}
+          />
+        </div>
         <Map />
       </div>
     );

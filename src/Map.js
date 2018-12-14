@@ -9,8 +9,8 @@ const initViewport = {
         latitude: 0,
         longitude: 0,
         zoom: 12,
-        width: 500,
-        height: 500
+        width: window.innerWidth,
+        height: window.innerHeight
 }
 
 class Map extends Component {
