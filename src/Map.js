@@ -72,7 +72,7 @@ class Map extends Component {
                         <Geocoder mapRef={this.mapRef} onResult={this.handleOnResult} onViewportChange={updateViewport} mapboxApiAccessToken={token} position="top-right" />
                     </div>
                     <Marker latitude={35.95} longitude={-83.99} offsetLeft={-20} offsetTop={-10}>
-                        <div><i class="fa fa-map-marker" aria-hidden="true"></i></div>
+                        <div><i className="fa fa-map-marker" aria-hidden="true"></i></div>
                     </Marker>
                     <DeckGL {...viewport} layers={[searchResultLayer]} />
                 </MapGL>
