@@ -9,7 +9,7 @@ export default function ListItem(props) {
         onClick={() => props.onDeleteItem(props.item.key)}
       />
 
-      { props.item.text }
+      { props.item.text } at {props.item.location}
     </li>
   )
 }

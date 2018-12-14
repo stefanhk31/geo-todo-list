@@ -6,7 +6,7 @@ import Map from './containers/map/Map';
 import List from './components/list/List';
 import MapboxClient from "mapbox/lib/services/geocoding";
 import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
-import './App.scss';
+//import './App.scss';
 
 const token = process.env.REACT_APP_API_KEY;
 
