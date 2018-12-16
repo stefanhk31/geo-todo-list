@@ -28,7 +28,7 @@ class App extends Component {
 
   handleAddItem = item => {
     const items = [...this.state.items, item];
-    const currentItem = {...item};
+    const currentItem = { ...item };
 
     // update state with new item
     this.setState({
@@ -44,10 +44,10 @@ class App extends Component {
       location: location,
       key: this.state.currentItem.key
     }
-      this.setState({
-        currentItem: currentItem
-      })
-    }
+    this.setState({
+      currentItem: currentItem
+    })
+  }
 
   addItem = e => {
     e.preventDefault();

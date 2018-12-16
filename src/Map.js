@@ -8,7 +8,7 @@ const token = process.env.REACT_APP_API_KEY;
 const initViewport = {
         latitude: 0,
         longitude: 0,
-        zoom: 12,
+        zoom: 15,
         width: window.innerWidth,
         height: window.innerHeight
 }

@@ -63,7 +63,6 @@ export default class ItemInput extends Component {
         <div className="list-header">
           <form onSubmit={this.handleSubmit}>
             <input
-              type="text"
               placeholder="Task"
               name="text"
               value={this.state.item.text}
