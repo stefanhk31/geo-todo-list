@@ -83,13 +83,16 @@ class App extends Component {
     return (
       <div className="App">
         <div className="todo-container">
-          <ItemInput onAddItem={this.handleAddItem} />
-          <List
+          {/* <ItemInput onAddItem={this.handleAddItem} /> */}
+          {/* <List
             items={this.state.items}
             onDeleteItem={this.handleDeleteItem}
-          />
+          /> */}
         </div>
-        <Map />
+        <Map itemInput={<ItemInput onAddItem={this.handleAddItem} />} list={<List
+            items={this.state.items}
+            onDeleteItem={this.handleDeleteItem}
+          />} />
       </div>
     );
   }

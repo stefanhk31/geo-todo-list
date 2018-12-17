@@ -14,94 +14,87 @@ const initViewport = {
 }
 
 class Map extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-          viewport: initViewport,
-          searchResultLayer: null
-      };
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewport: initViewport,
+      searchResultLayer: null
+    };
+  }
+
+  mapRef = React.createRef()
+
+  componentDidMount() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLatitude = position.coords.latitude
+          const userLongitude = position.coords.longitude
+          this.setState({
+            viewport: {
+              ...initViewport,
+              latitude: userLatitude,
+              longitude: userLongitude,
+            }
+          })
+        }
+      )
     }
+  }
 
-    mapRef = React.createRef()
+  handleOnResult = e => {
+    this.setState({
+      searchResultLayer: new GeoJsonLayer({
+        id: "search-result",
+        data: e.result.geometry,
+        getFillColor: [255, 0, 0, 128],
+        getRadius: 1000,
+        pointRadiusMinPixels: 10,
+        pointRadiusMaxPixels: 10
+      })
+    });
+  };
 
-    componentDidMount() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const userLatitude = position.coords.latitude
-            const userLongitude = position.coords.longitude
-            this.setState({
-              viewport: {
-                ...initViewport,
-                latitude: userLatitude,
-                longitude: userLongitude,
-              }
-            })
-          }
-        )
-      }
-    }
+  render() {
+    const { viewport, searchResultLayer } = this.state;
 
-    handleOnResult = e => {
-      this.setState({
-        searchResultLayer: new GeoJsonLayer({
-          id: "search-result",
-          data: e.result.geometry,
-          getFillColor: [255, 0, 0, 128],
-          getRadius: 1000,
-          pointRadiusMinPixels: 10,
-          pointRadiusMaxPixels: 10
-        })
-      });
+    const updateViewport = (viewport) => {
+      this.setState({ viewport })
     };
 
-    render() {
-      const { viewport, searchResultLayer } = this.state;
+    return (
+      <div className="map-container">
+        <MapGL
+          {...viewport}
+          ref={this.mapRef}
+          mapStyle='mapbox://styles/mapbox/streets-v9'
+          mapboxApiAccessToken={token}
+          onViewportChange={updateViewport}
+        >
 
-      const updateViewport = (viewport) => {
-        this.setState({ viewport })
-      };
-
-      return (
-        <div className="map-container">
-          <MapGL
-            {...viewport}
-            ref={this.mapRef}
-            mapStyle='mapbox://styles/mapbox/streets-v9'
-            mapboxApiAccessToken={token}
-            onViewportChange={updateViewport}
-          >
-            {/* <div className="nav">
-              <NavigationControl onViewportChange={updateViewport} />
-      </div> */}
-
-            <div className="geocoder">
-              <Geocoder
-                mapRef={this.mapRef}
-                onResult={this.handleOnResult}
-                onViewportChange={updateViewport}
-                mapboxApiAccessToken={token}
-                position="top-right"
-              />
-            </div>
-
-           {/* <Marker
-              latitude={35.95}
-              longitude={-83.99}
-              offsetLeft={-20}
-              offsetTop={-10}
-            >
-              <div><i className="fa fa-map-marker" aria-hidden="true"></i></div>
-           </Marker> */}
-
-            <DeckGL
-              {...viewport}
-              layers={[searchResultLayer]}
+          <div className="geocoder">
+            <Geocoder
+              mapRef={this.mapRef}
+              onResult={this.handleOnResult}
+              onViewportChange={updateViewport}
+              mapboxApiAccessToken={token}
+              position="top-right"
             />
-          </MapGL>
-        </div>
-      );
-    }
+          </div>
+
+          <div className="todo-container">
+            {this.props.itemInput}
+            {this.props.list}
+          </div>
+
+          <DeckGL
+            {...viewport}
+            layers={[searchResultLayer]}
+          />
+        </MapGL>
+      </div>
+    );
+  }
 }
 
 export default Map;
