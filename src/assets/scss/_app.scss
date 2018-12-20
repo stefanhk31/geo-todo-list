@@ -6,9 +6,17 @@
 
 .todo-container {
   background-color: white;
-  width: fit-content;
+  width: fit-width;
+  border: 3px solid black;
+  border-radius: 15px;
   padding: .5em;
   position: relative;
   margin: 1em;
   z-index: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.list-items {
+  list-style: none;
 }

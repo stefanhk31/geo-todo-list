@@ -63,7 +63,7 @@ class Map extends Component {
     };
 
     return (
-      <div className="map-container">
+      <div className="map-container" id="map">
         <MapGL
           {...viewport}
           ref={this.mapRef}
@@ -80,11 +80,6 @@ class Map extends Component {
               mapboxApiAccessToken={token}
               position="top-right"
             />
-          </div>
-
-          <div className="todo-container">
-            {this.props.itemInput}
-            {this.props.list}
           </div>
 
           <DeckGL

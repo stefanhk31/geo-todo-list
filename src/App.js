@@ -4,8 +4,9 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
-import MapboxClient from "mapbox/lib/services/geocoding";
-import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
+import Locations from './components/locationFilter/Locations';
+//import MapboxClient from "mapbox/lib/services/geocoding";
+//import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
 
 const token = process.env.REACT_APP_API_KEY;
 
@@ -15,7 +16,7 @@ const initItem = {
   key: ''
 };
 
-const mapboxClient = new MapboxClient(token);
+//const mapboxClient = new MapboxClient(token);
 
 class App extends Component {
   constructor(props) {
@@ -49,10 +50,10 @@ class App extends Component {
     })
   }
 
-  addItem = e => {
+  //Attempt to geocode string in "location" field--currently not working when un-commented
+  /* addItem = e => {
     e.preventDefault();
     const newItem = this.state.currentItem;
-    const itemLoc = this.state.currentItem.location;
     if (newItem.text !== '') {
       const items = [...this.state.items, newItem]
       this.setState({
@@ -60,16 +61,26 @@ class App extends Component {
         currentItem: initItem
       })
     }
-    /* mapboxClient.geocodeForward(itemLoc, function(err, res) {
-      var itemCoords = res.features[0].geometry.coordinates;
-      var map = document.getElementById("map");
 
-      /*new mapboxgl.Marker(Map)
+    this.geocodeLocation();
+       var map = document.getElementById("map"); 
+
+     new mapboxgl.Marker(Map)
         .setLngLat(itemCoords)
         .addTo(map);
 
-    }); */
+    }); 
+  } 
+
+  geocodeLocation() {
+    const itemLoc = this.state.currentItem.location;
+    const itemCoords = new mapboxClient.geocodeForward(itemLoc, function (_err, res) {
+      return res.features[0].geometry.coordinates;
+    })
+    console.log(itemCoords)
   }
+  */
+
 
   handleDeleteItem = key => {
     const items = this.state.items.filter(item => item.key !== key);
@@ -83,16 +94,17 @@ class App extends Component {
     return (
       <div className="App">
         <div className="todo-container">
-          {/* <ItemInput onAddItem={this.handleAddItem} /> */}
-          {/* <List
+          <ItemInput onAddItem={this.handleAddItem} />
+          <List
             items={this.state.items}
             onDeleteItem={this.handleDeleteItem}
-          /> */}
+          />
+          <Locations
+            items={this.state.items}
+          />
         </div>
-        <Map itemInput={<ItemInput onAddItem={this.handleAddItem} />} list={<List
-            items={this.state.items}
-            onDeleteItem={this.handleDeleteItem}
-          />} />
+
+        <Map />
       </div>
     );
   }
