@@ -2,36 +2,30 @@ import React from 'react'
 import ListItem from './list-item/ListItem';
 
 export default function List(props) {
-  const list = Object.entries(props.items)
-    .map(item => {
-      return (
-        <li className="list__item" key={item[0]}>
-          { item[0] }
-          <ul className="list">
-            { item[1].map((task) => (
+  const list = [];
+
+  for (let key in props.items) {
+    list.push((
+      <li className="list__item" key={key}>
+        <h5 className="list-item__heading">{ key.toUpperCase() }</h5>
+        <ul className="list">
+          {
+            props.items[key].map(item => (
               <ListItem
-                key={task.key}
-                item={task}
+                classes="list__item--child"
+                key={item.key}
+                item={item}
                 onDeleteItem={props.onDeleteItem}
               />
-            ))}
-          </ul>
-        </li>
-      )
-    });
-
-  // const list = props.items.length === 0 ? (
-  //     <li className="list-items">No tasks</li>
-  //   ) : props.items.map(item => (
-  //     <ListItem
-  //       key={item.key}
-  //       item={item}
-  //       onDeleteItem={props.onDeleteItem}
-  //     />
-  //   ));
+            ))
+          }
+        </ul>
+      </li>
+    ));
+  }
 
   return (
-    <ul className="list">
+    <ul className="list list--parent">
       { list }
     </ul>
   )

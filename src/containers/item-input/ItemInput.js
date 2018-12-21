@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import FilterSelect from '../../components/filterSelect/FilterSelect';
+
 export default class ItemInput extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +16,7 @@ export default class ItemInput extends Component {
   }
 
   isValidItem = () => {
-    return this.state.item.text !== '' && this.state.item.location !== '';
+    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '';
   }
 
   handleSubmit = (e) => {
@@ -26,7 +28,8 @@ export default class ItemInput extends Component {
       // Add new item
       const item = {
         key: Date.now(),
-        ...this.state.item
+        text: this.state.item.text.trim().toLowerCase(),
+        location: this.state.item.location.trim().toLowerCase(),
       };
 
       this.props.onAddItem(item);
@@ -58,10 +61,6 @@ export default class ItemInput extends Component {
   }
 
   render() {
-    const options = this.props.locationKeys.map((location, index) => (
-      <option key={index} value={location}>{ location }</option>
-    ));
-
     return (
       <div className="list-main">
         <div className="list-header">
@@ -88,20 +87,12 @@ export default class ItemInput extends Component {
             )
           }
         </div>
-        {/* Filter functionality
-        <div className="list__filter">
-          <label htmlFor="filter">Filter by location:</label>
-          <select
-            className="filter__select"
-            name="filter"
-            id="filter"
-            value={this.props.filterKey}
-            onChange={this.props.onFilterLocation}
-          >
-            <option value="All">Select a All</option>
-            { options }
-          </select>
-        </div> */}
+
+        <FilterSelect
+          locationKeys={this.props.locationKeys}
+          filterKey={this.props.filterKey}
+          onFilterLocation={this.props.onFilterLocation}
+        />
     </div>
     )
   }
