@@ -22,14 +22,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     const initTasks = {
-      // home: Array(2).fill(null).map((item, index) => ({key: index + Math.random(), text: `Task ${index + 1}`, location: 'home'})),
-      // work: Array(2).fill(null).map((item, index) => ({key: index + Math.random(), text: `Task ${index + 1}`, location: 'work'})),
-      home: [
-        {key: 1, text: 'eat', location: 'home'},
-      ],
-      work: [
-        { key: 2, text: 'meeting', location: 'work'},
-      ],
+      home: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'home'})),
+      work: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'work'})),
     };
 
     this.state = {
@@ -42,13 +36,12 @@ class App extends Component {
   handleAddItem = item => {
     const items = {...this.state.items};
 
-    if (this.state.items.hasProperty(item.location)) {
-      items[item.location.toLowerCase()].push(item);
+    if (this.state.items.hasOwnProperty(item.location)) {
+      items[item.location].push(item);
     } else {
-      items[item.location.toLowerCase()] = [item];
+      items[item.location] = [item];
     }
 
-    // const items = [...this.state.items, item];
     const currentItem = { ...item };
 
     // update state with new item
@@ -118,11 +111,15 @@ class App extends Component {
   };
 
   render() {
-    // const filteredItems = this.state.filterKey === 'All' ?
-    //   this.state.items :
-    //   this.state.items[this.state.filterKey];
+    let filteredItems;
 
-    const filteredItems = this.state.items;
+    if (this.state.filterKey === 'All') {
+      filteredItems = Object.assign({}, this.state.items);
+    } else {
+      const obj = {};
+      obj[this.state.filterKey] = [...this.state.items[this.state.filterKey]];
+      filteredItems = obj;
+    }
 
     return (
       <div className="App">
