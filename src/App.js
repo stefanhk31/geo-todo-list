@@ -21,14 +21,34 @@ const initItem = {
 class App extends Component {
   constructor(props) {
     super(props);
+    const initTasks = {
+      // home: Array(2).fill(null).map((item, index) => ({key: index + Math.random(), text: `Task ${index + 1}`, location: 'home'})),
+      // work: Array(2).fill(null).map((item, index) => ({key: index + Math.random(), text: `Task ${index + 1}`, location: 'work'})),
+      home: [
+        {key: 1, text: 'eat', location: 'home'},
+      ],
+      work: [
+        { key: 2, text: 'meeting', location: 'work'},
+      ],
+    };
+
     this.state = {
-      items: [],
-      currentItem: initItem
+      items: initTasks,
+      currentItem: initItem,
+      filterKey: 'All',
     }
   }
 
   handleAddItem = item => {
-    const items = [...this.state.items, item];
+    const items = {...this.state.items};
+
+    if (this.state.items.hasProperty(item.location)) {
+      items[item.location.toLowerCase()].push(item);
+    } else {
+      items[item.location.toLowerCase()] = [item];
+    }
+
+    // const items = [...this.state.items, item];
     const currentItem = { ...item };
 
     // update state with new item
@@ -82,25 +102,41 @@ class App extends Component {
   */
 
 
-  handleDeleteItem = key => {
-    const items = this.state.items.filter(item => item.key !== key);
+  handleDeleteItem = item => {
+    console.log('delete item', item);    
+    // const items = this.state.items.filter(item => item.key !== key);
 
-    this.setState({
-      items,
-    });
+    // this.setState({
+    //   items,
+    // });
   }
 
+  handleFilterLocation = (e) => {
+    this.setState({
+      filterKey: e.target.value,
+    });
+  };
+
   render() {
+    // const filteredItems = this.state.filterKey === 'All' ?
+    //   this.state.items :
+    //   this.state.items[this.state.filterKey];
+
+    const filteredItems = this.state.items;
+
     return (
       <div className="App">
         <div className="todo-container">
-          <ItemInput onAddItem={this.handleAddItem} />
-          <List
-            items={this.state.items}
-            onDeleteItem={this.handleDeleteItem}
+          <ItemInput
+            onAddItem={this.handleAddItem}
+            locationKeys={Object.keys(this.state.items)}
+            onFilterLocation={this.handleFilterLocation}
+            filterKey={this.state.filterKey}
           />
-          <Locations
-            items={this.state.items}
+
+          <List
+            items={filteredItems}
+            onDeleteItem={this.handleDeleteItem}
           />
         </div>
 

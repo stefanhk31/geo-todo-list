@@ -6,7 +6,7 @@ export default function ListItem(props) {
       <input
         type="checkbox"
         className="checkbox"
-        onClick={() => props.onDeleteItem(props.item.key)}
+        onClick={() => props.onDeleteItem(props.item)}
       />
       { props.item.text }
     </li>
