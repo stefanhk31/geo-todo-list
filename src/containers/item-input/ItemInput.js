@@ -58,12 +58,15 @@ export default class ItemInput extends Component {
   }
 
   render() {
+    const options = this.props.locationKeys.map((location, index) => (
+      <option key={index} value={location}>{ location }</option>
+    ));
+
     return (
       <div className="list-main">
         <div className="list-header">
           <form onSubmit={this.handleSubmit}>
             <input
-              type="text"
               placeholder="Task"
               name="text"
               value={this.state.item.text}
@@ -85,6 +88,20 @@ export default class ItemInput extends Component {
             )
           }
         </div>
+        {/* Filter functionality
+        <div className="list__filter">
+          <label htmlFor="filter">Filter by location:</label>
+          <select
+            className="filter__select"
+            name="filter"
+            id="filter"
+            value={this.props.filterKey}
+            onChange={this.props.onFilterLocation}
+          >
+            <option value="All">Select a All</option>
+            { options }
+          </select>
+        </div> */}
     </div>
     )
   }
