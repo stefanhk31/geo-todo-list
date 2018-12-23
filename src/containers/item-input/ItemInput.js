@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import FilterSelect from '../../components/filterSelect/FilterSelect';
+
 export default class ItemInput extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +16,7 @@ export default class ItemInput extends Component {
   }
 
   isValidItem = () => {
-    return this.state.item.text !== '' && this.state.item.location !== '';
+    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '';
   }
 
   handleSubmit = (e) => {
@@ -26,7 +28,8 @@ export default class ItemInput extends Component {
       // Add new item
       const item = {
         key: Date.now(),
-        ...this.state.item
+        text: this.state.item.text.trim().toLowerCase(),
+        location: this.state.item.location.trim().toLowerCase(),
       };
 
       this.props.onAddItem(item);
@@ -84,6 +87,12 @@ export default class ItemInput extends Component {
             )
           }
         </div>
+
+        <FilterSelect
+          locationKeys={this.props.locationKeys}
+          filterKey={this.props.filterKey}
+          onFilterLocation={this.props.onFilterLocation}
+        />
     </div>
     )
   }
