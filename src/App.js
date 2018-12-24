@@ -4,17 +4,10 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
-import Locations from './components/locationFilter/Locations';
 //import MapboxClient from "mapbox/lib/services/geocoding";
 //import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
 
-const token = process.env.REACT_APP_API_KEY;
-
-const initItem = {
-  text: '',
-  location: '',
-  key: ''
-};
+//const token = process.env.REACT_APP_API_KEY;
 
 //const mapboxClient = new MapboxClient(token);
 
@@ -24,6 +17,12 @@ class App extends Component {
     const initTasks = {
       home: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'home'})),
       work: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'work'})),
+    };
+
+    const initItem = {
+      text: '',
+      location: '',
+      key: ''
     };
 
     this.state = {
@@ -96,12 +95,25 @@ class App extends Component {
 
 
   handleDeleteItem = item => {
-    console.log('delete item', item);    
-    // const items = this.state.items.filter(item => item.key !== key);
+    const key = item.key
+    const listItems = this.state.items[item.location].filter(item => item.key !== key)
+    var allItems = this.state.items
 
-    // this.setState({
-    //   items,
-    // });
+    //set array of item.location to array that has filtered out the deleted item
+    if (this.state.items.hasOwnProperty(item.location)) {
+      allItems[item.location] = listItems
+    }
+
+    //delete the list if there are no more items
+    if (allItems[item.location].length === 0) {
+      delete allItems[item.location]
+    }
+
+    //update state with item deleted
+    this.setState({
+      items: allItems
+    })
+  
   }
 
   handleFilterLocation = (e) => {
