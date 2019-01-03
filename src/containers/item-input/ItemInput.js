@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import apiServices from '../../api-services/apiServices';
 import FilterSelect from '../../components/filterSelect/FilterSelect';
 
 export default class ItemInput extends Component {
@@ -25,12 +26,12 @@ export default class ItemInput extends Component {
     e.preventDefault();
 
     //geocode address using HERE Geocoder API
-    const geocode = new XMLHttpRequest();
-    geocode.open('GET', 'https://geocoder.api.here.com/6.2/geocode.json?app_id=25rKT2MgLyrJ93e8JHFe&app_code=J8nLFDmQ2O7pg7GCv3fsKw&searchtext=' + this.state.item.address, true);
-    geocode.send();
-    const addressObj = JSON.parse(geocode.responseText);
-    console.log(addressObj);
- 
+    apiServices.getGeocode(this.state.item.address)
+      .then(geocode => {
+        console.log('geocode', geocode);
+      }).catch(error => {
+        console.log('error', error);
+      });
 
     // make sure both fields are not empty
     if (this.isValidItem()) {
