@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import apiServices from '../../api-services/apiServices';
 import FilterSelect from '../../components/filterSelect/FilterSelect';
 
 export default class ItemInput extends Component {
@@ -10,18 +11,27 @@ export default class ItemInput extends Component {
       item: {
         text: '',
         location: '',
+        address: '',
       },
       isValid: true,
     }
   }
 
   isValidItem = () => {
-    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '';
+    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '' && this.state.item.address.trim() !== '';
   }
 
   handleSubmit = (e) => {
     // Prevent form submission
     e.preventDefault();
+
+    //geocode address using HERE Geocoder API
+    apiServices.getGeocode(this.state.item.address)
+      .then(geocode => {
+        console.log('geocode', geocode);
+      }).catch(error => {
+        console.log('error', error);
+      });
 
     // make sure both fields are not empty
     if (this.isValidItem()) {
@@ -30,15 +40,17 @@ export default class ItemInput extends Component {
         key: Date.now(),
         text: this.state.item.text.trim().toLowerCase(),
         location: this.state.item.location.trim().toLowerCase(),
+        address: this.state.item.address.trim().toLowerCase()
       };
 
-      this.props.onAddItem(item);
+      this.props.onAddItem(item);      
 
       // reset state variables
       this.setState({
         item: {
           text: '',
           location: '',
+          address: ''
         },
         isValid: true,
       });
@@ -76,6 +88,13 @@ export default class ItemInput extends Component {
               placeholder="Location"
               name="location"
               value={this.state.item.location}
+              onChange={this.handleInput}
+            />
+
+            <input
+              placeholder="Address"
+              name="address"
+              value={this.state.item.address}
               onChange={this.handleInput}
             />
 

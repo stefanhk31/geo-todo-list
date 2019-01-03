@@ -1,93 +1,58 @@
 import React, { Component } from 'react';
-import MapGL, { NavigationControl, Marker } from 'react-map-gl';
-import DeckGL, { GeoJsonLayer } from "deck.gl";
-import Geocoder from "react-map-gl-geocoder";
 
-const token = process.env.REACT_APP_API_KEY;
-
-const initViewport = {
-  latitude: 0,
-  longitude: 0,
-  zoom: 12,
-  width: window.innerWidth,
-  height: window.innerHeight
-}
+const BASE_MAP_URL = 'https://image.maps.api.here.com/mia/1.6/mapview?';
 
 class Map extends Component {
+
+  // For conciseness simply include all parameters in the querystring directly
+
   constructor(props) {
     super(props);
     this.state = {
-      viewport: initViewport,
-      searchResultLayer: null
-    };
+      url: `${BASE_MAP_URL}w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow`,
+      points: [],
+    }
   }
 
-  mapRef = React.createRef()
+// Set map to user's location on load
 
   componentDidMount() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const userLatitude = position.coords.latitude
-          const userLongitude = position.coords.longitude
           this.setState({
-            viewport: {
-              ...initViewport,
-              latitude: userLatitude,
-              longitude: userLongitude,
-            }
-          })
-        }
-      )
+            url: `${BASE_MAP_URL}c=${position.coords.latitude}%2C${position.coords.longitude}&w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow`
+          });
+        },
+      );
     }
   }
 
-  handleOnResult = e => {
-    this.setState({
-      searchResultLayer: new GeoJsonLayer({
-        id: "search-result",
-        data: e.result.geometry,
-        getFillColor: [255, 0, 0, 128],
-        getRadius: 1000,
-        pointRadiusMinPixels: 10,
-        pointRadiusMaxPixels: 10
-      })
-    });
-  };
+
+  // Helper function to format list of points
+
+  getPOIList() {
+    if (this.state.points.length > 0) {
+      let param = '&poi=';
+      for (var poi in this.state.points) {
+        param += poi.latitude + ',' + poi.longitude;
+      }
+      return param;
+    }
+
+    return '';
+  }
+
+  // Render method builds the URL dynamically to fetch the image from the
+  // HERE Map Image API
 
   render() {
-    const { viewport, searchResultLayer } = this.state;
-
-    const updateViewport = (viewport) => {
-      this.setState({ viewport })
-    };
+    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}${this.getPOIList()}`;
 
     return (
-      <div className="map-container" id="map">
-        <MapGL
-          {...viewport}
-          ref={this.mapRef}
-          mapStyle='mapbox://styles/mapbox/streets-v9'
-          mapboxApiAccessToken={token}
-          onViewportChange={updateViewport}
-        >
-
-          <div className="geocoder">
-            <Geocoder
-              mapRef={this.mapRef}
-              onResult={this.handleOnResult}
-              onViewportChange={updateViewport}
-              mapboxApiAccessToken={token}
-              position="top-right"
-            />
-          </div>
-
-          <DeckGL
-            {...viewport}
-            layers={[searchResultLayer]}
-          />
-        </MapGL>
-      </div>
+      <img
+        src={imageSrc}
+        alt="Todo Map"/>
     );
   }
 }

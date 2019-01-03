@@ -4,32 +4,28 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
-import Locations from './components/locationFilter/Locations';
-//import MapboxClient from "mapbox/lib/services/geocoding";
-//import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
-
-const token = process.env.REACT_APP_API_KEY;
-
-const initItem = {
-  text: '',
-  location: '',
-  key: ''
-};
-
-//const mapboxClient = new MapboxClient(token);
+import Location from './components/location/Location'
 
 class App extends Component {
   constructor(props) {
     super(props);
+
     const initTasks = {
       home: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'home'})),
       work: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'work'})),
+    };
+
+    const initItem = {
+      text: '',
+      location: '',
+      key: ''
     };
 
     this.state = {
       items: initTasks,
       currentItem: initItem,
       filterKey: 'All',
+      coords: '0,0'
     }
   }
 
@@ -63,45 +59,25 @@ class App extends Component {
     })
   }
 
-  //Attempt to geocode string in "location" field--currently not working when un-commented
-  /* addItem = e => {
-    e.preventDefault();
-    const newItem = this.state.currentItem;
-    if (newItem.text !== '') {
-      const items = [...this.state.items, newItem]
-      this.setState({
-        items: items,
-        currentItem: initItem
-      })
+  handleDeleteItem = item => {
+    const key = item.key
+    const listItems = this.state.items[item.location].filter(item => item.key !== key)
+    var allItems = this.state.items
+
+    //set array of item.location to array that has filtered out the deleted item
+    if (this.state.items.hasOwnProperty(item.location)) {
+      allItems[item.location] = listItems
     }
 
-    this.geocodeLocation();
-       var map = document.getElementById("map"); 
+    //delete the list if there are no more items
+    if (allItems[item.location].length === 0) {
+      delete allItems[item.location]
+    }
 
-     new mapboxgl.Marker(Map)
-        .setLngLat(itemCoords)
-        .addTo(map);
-
-    }); 
-  } 
-
-  geocodeLocation() {
-    const itemLoc = this.state.currentItem.location;
-    const itemCoords = new mapboxClient.geocodeForward(itemLoc, function (_err, res) {
-      return res.features[0].geometry.coordinates;
+    //update state with item deleted
+    this.setState({
+      items: allItems
     })
-    console.log(itemCoords)
-  }
-  */
-
-
-  handleDeleteItem = item => {
-    console.log('delete item', item);    
-    // const items = this.state.items.filter(item => item.key !== key);
-
-    // this.setState({
-    //   items,
-    // });
   }
 
   handleFilterLocation = (e) => {
@@ -136,7 +112,7 @@ class App extends Component {
             onDeleteItem={this.handleDeleteItem}
           />
         </div>
-
+        {/* <Location /> */}
         <Map />
       </div>
     );
