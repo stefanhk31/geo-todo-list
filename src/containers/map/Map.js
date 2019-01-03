@@ -26,7 +26,6 @@ class Map extends Component {
     }
   }
 
-// Geocode user input in address field
 
   // Helper function to format list of points
 

@@ -24,6 +24,14 @@ export default class ItemInput extends Component {
     // Prevent form submission
     e.preventDefault();
 
+    //geocode address using HERE Geocoder API
+    const geocode = new XMLHttpRequest();
+    geocode.open('GET', 'https://geocoder.api.here.com/6.2/geocode.json?app_id=25rKT2MgLyrJ93e8JHFe&app_code=J8nLFDmQ2O7pg7GCv3fsKw&searchtext=' + this.state.item.address, true);
+    geocode.send();
+    const addressObj = JSON.parse(geocode.responseText);
+    console.log(addressObj);
+ 
+
     // make sure both fields are not empty
     if (this.isValidItem()) {
       // Add new item
@@ -34,9 +42,7 @@ export default class ItemInput extends Component {
         address: this.state.item.address.trim().toLowerCase()
       };
 
-      this.props.onAddItem(item);
-
-      //geocode address using HERE Geocoder API
+      this.props.onAddItem(item);      
 
       // reset state variables
       this.setState({
