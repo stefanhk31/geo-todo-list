@@ -6,8 +6,8 @@ import Map from './containers/map/Map';
 import List from './components/list/List';
 import Location from './components/location/Location'
 
-const app_id = '25rKT2MgLyrJ93e8JHFe' 
-const app_code = 'J8nLFDmQ2O7pg7GCv3fsKw' 
+const app_id = process.env.REACT_APP_APP_ID;
+const app_code = process.env.REACT_APP_APP_CODE;
 
 class App extends Component {
   constructor(props) {
@@ -81,7 +81,6 @@ class App extends Component {
     this.setState({
       items: allItems
     })
-  
   }
 
   handleFilterLocation = (e) => {
