@@ -4,16 +4,15 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
-//import MapboxClient from "mapbox/lib/services/geocoding";
-//import mapboxgl from "mapbox-gl/dist/mapbox-gl-unminified";
+import Location from './components/location/Location'
 
-//const token = process.env.REACT_APP_API_KEY;
-
-//const mapboxClient = new MapboxClient(token);
+const app_id = '25rKT2MgLyrJ93e8JHFe' 
+const app_code = 'J8nLFDmQ2O7pg7GCv3fsKw' 
 
 class App extends Component {
   constructor(props) {
     super(props);
+
     const initTasks = {
       home: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'home'})),
       work: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'work'})),
@@ -29,6 +28,7 @@ class App extends Component {
       items: initTasks,
       currentItem: initItem,
       filterKey: 'All',
+      coords: '0,0'
     }
   }
 
@@ -61,38 +61,6 @@ class App extends Component {
       currentItem: currentItem
     })
   }
-
-  //Attempt to geocode string in "location" field--currently not working when un-commented
-  /* addItem = e => {
-    e.preventDefault();
-    const newItem = this.state.currentItem;
-    if (newItem.text !== '') {
-      const items = [...this.state.items, newItem]
-      this.setState({
-        items: items,
-        currentItem: initItem
-      })
-    }
-
-    this.geocodeLocation();
-       var map = document.getElementById("map"); 
-
-     new mapboxgl.Marker(Map)
-        .setLngLat(itemCoords)
-        .addTo(map);
-
-    }); 
-  } 
-
-  geocodeLocation() {
-    const itemLoc = this.state.currentItem.location;
-    const itemCoords = new mapboxClient.geocodeForward(itemLoc, function (_err, res) {
-      return res.features[0].geometry.coordinates;
-    })
-    console.log(itemCoords)
-  }
-  */
-
 
   handleDeleteItem = item => {
     const key = item.key
@@ -148,8 +116,8 @@ class App extends Component {
             onDeleteItem={this.handleDeleteItem}
           />
         </div>
-
-        <Map />
+        {/* <Location /> */}
+        <Map app_id={app_id} app_code={app_code} />
       </div>
     );
   }

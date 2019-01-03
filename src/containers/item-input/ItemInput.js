@@ -10,13 +10,14 @@ export default class ItemInput extends Component {
       item: {
         text: '',
         location: '',
+        address: '',
       },
       isValid: true,
     }
   }
 
   isValidItem = () => {
-    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '';
+    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '' && this.state.item.address.trim() !== '';
   }
 
   handleSubmit = (e) => {
@@ -30,15 +31,19 @@ export default class ItemInput extends Component {
         key: Date.now(),
         text: this.state.item.text.trim().toLowerCase(),
         location: this.state.item.location.trim().toLowerCase(),
+        address: this.state.item.address.trim().toLowerCase()
       };
 
       this.props.onAddItem(item);
+
+      //geocode address using HERE Geocoder API
 
       // reset state variables
       this.setState({
         item: {
           text: '',
           location: '',
+          address: ''
         },
         isValid: true,
       });
@@ -76,6 +81,13 @@ export default class ItemInput extends Component {
               placeholder="Location"
               name="location"
               value={this.state.item.location}
+              onChange={this.handleInput}
+            />
+
+            <input
+              placeholder="Address"
+              name="address"
+              value={this.state.item.address}
               onChange={this.handleInput}
             />
 
