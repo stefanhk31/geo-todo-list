@@ -46,13 +46,11 @@ class Map extends Component {
   // HERE Map Image API
 
   render() {
+    const imageSrc = `${this.state.url}&app_id=${this.props.app_id}&app_code=${this.props.app_code}${this.getPOIList()}`;
+
     return (
       <img
-        src={ this.state.url
-          + '&app_id=' + this.props.app_id
-          + '&app_code=' + this.props.app_code
-          + this.getPOIList()
-          }
+        src={imageSrc}
         alt="Todo Map"/>
     );
   }
