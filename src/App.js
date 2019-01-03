@@ -6,9 +6,6 @@ import Map from './containers/map/Map';
 import List from './components/list/List';
 import Location from './components/location/Location'
 
-const app_id = process.env.REACT_APP_APP_ID;
-const app_code = process.env.REACT_APP_APP_CODE;
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -116,7 +113,7 @@ class App extends Component {
           />
         </div>
         {/* <Location /> */}
-        <Map app_id={app_id} app_code={app_code} />
+        <Map />
       </div>
     );
   }
