@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+const BASE_MAP_URL = 'https://image.maps.api.here.com/mia/1.6/mapview?';
+
 class Map extends Component {
 
   // For conciseness simply include all parameters in the querystring directly
@@ -7,7 +9,7 @@ class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: 'https://image.maps.api.here.com/mia/1.6/mapview?w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow',
+      url: `${BASE_MAP_URL}w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow`,
       points: [],
     }
   }
@@ -19,7 +21,7 @@ class Map extends Component {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           this.setState({
-            url: 'https://image.maps.api.here.com/mia/1.6/mapview?c=' + position.coords.latitude + '%2C' + position.coords.longitude + '&w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow'
+            url: `${BASE_MAP_URL}c=${position.coords.latitude}%2C${position.coords.longitude}&w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow`
           });
         },
       );
@@ -45,13 +47,11 @@ class Map extends Component {
   // HERE Map Image API
 
   render() {
+    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}${this.getPOIList()}`;
+
     return (
       <img
-        src={ this.state.url
-          + '&app_id=' + this.props.app_id
-          + '&app_code=' + this.props.app_code
-          + this.getPOIList()
-          }
+        src={imageSrc}
         alt="Todo Map"/>
     );
   }
