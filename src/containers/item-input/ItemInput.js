@@ -11,7 +11,7 @@ export default class ItemInput extends Component {
       item: {
         text: '',
         location: '',
-        address: '',
+        address: '', 
         points: []
       },
       isValid: true,
@@ -27,17 +27,20 @@ export default class ItemInput extends Component {
     e.preventDefault();
 
     //geocode address using HERE Geocoder API
-    const coords = apiServices.getGeocode(this.state.item.address)
+    apiServices.getGeocode(this.state.item.address)
       .then(geocode => {
         // get address coordinates from resulting JSON object
-        return geocode.Response.View[0].Result[0].Location.DisplayPosition;
+        const coords= geocode.Response.View[0].Result[0].Location.DisplayPosition;
+        const points = this.state.item.points;
+        points.push(coords)
+        this.setState({
+          points: points
+        })
+        this.props.coordsCallback(points)
       })
       .catch(error => {
         console.log('error', error);
       });
-
-    console.log(coords); // Promise {<pending>}, [[Promisestatus]]: "resolved", [[PromiseValue]]: {Latitude: 35.95161, Longitude: -83.9881}
-    console.log(coords.Latitude); //undefined
 
     // make sure both fields are not empty
     if (this.isValidItem()) {
@@ -46,18 +49,19 @@ export default class ItemInput extends Component {
         key: Date.now(),
         text: this.state.item.text.trim().toLowerCase(),
         location: this.state.item.location.trim().toLowerCase(),
-        address: this.state.item.address.trim().toLowerCase()
+        address: this.state.item.address.trim().toLowerCase(),
+        points: this.state.item.points
       };
 
       this.props.onAddItem(item);      
 
-      // reset state variables
+      // reset state variables of text, location, address
       this.setState({
         item: {
           text: '',
           location: '',
           address: '',
-          points: []
+          points: this.state.item.points
         },
         isValid: true,
       });

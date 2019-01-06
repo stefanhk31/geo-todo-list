@@ -28,6 +28,19 @@ class Map extends Component {
     }
   }
 
+  // Helper function to format list of points
+
+  getPOIList = () => {
+    if (this.state.points.length > 0) {
+      let param = '&poi=';
+      for (var poi in this.state.points) {
+        param += poi.latitude + ',' + poi.longitude;
+      }
+      return param;
+    }
+
+    return '';
+  } 
 
   // Render method builds the URL dynamically to fetch the image from the
   // HERE Map Image API

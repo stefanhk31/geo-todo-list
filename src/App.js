@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
-import Location from './components/location/Location'
 
 class App extends Component {
   constructor(props) {
@@ -25,8 +24,14 @@ class App extends Component {
       items: initTasks,
       currentItem: initItem,
       filterKey: 'All',
-      coords: '0,0'
+      coords: null
     }
+  }
+
+  coordsCallback = (coords) => {
+    this.setState({
+      coords: coords
+    })
   }
 
   handleAddItem = item => {
@@ -101,6 +106,7 @@ class App extends Component {
       <div className="App">
         <div className="todo-container">
           <ItemInput
+            coordsCallback={this.coordsCallback}
             onAddItem={this.handleAddItem}
             locationKeys={Object.keys(this.state.items)}
             onFilterLocation={this.handleFilterLocation}
@@ -112,8 +118,7 @@ class App extends Component {
             onDeleteItem={this.handleDeleteItem}
           />
         </div>
-        {/* <Location /> */}
-        <Map />
+        <Map coords={this.state.coords} />
       </div>
     );
   }
