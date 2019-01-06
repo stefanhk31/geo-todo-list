@@ -12,6 +12,7 @@ export default class ItemInput extends Component {
         text: '',
         location: '',
         address: '',
+        points: []
       },
       isValid: true,
     }
@@ -26,12 +27,17 @@ export default class ItemInput extends Component {
     e.preventDefault();
 
     //geocode address using HERE Geocoder API
-    apiServices.getGeocode(this.state.item.address)
+    const coords = apiServices.getGeocode(this.state.item.address)
       .then(geocode => {
-        console.log('geocode', geocode);
-      }).catch(error => {
+        // get address coordinates from resulting JSON object
+        return geocode.Response.View[0].Result[0].Location.DisplayPosition;
+      })
+      .catch(error => {
         console.log('error', error);
       });
+
+    console.log(coords); // Promise {<pending>}, [[Promisestatus]]: "resolved", [[PromiseValue]]: {Latitude: 35.95161, Longitude: -83.9881}
+    console.log(coords.Latitude); //undefined
 
     // make sure both fields are not empty
     if (this.isValidItem()) {
@@ -50,7 +56,8 @@ export default class ItemInput extends Component {
         item: {
           text: '',
           location: '',
-          address: ''
+          address: '',
+          points: []
         },
         isValid: true,
       });

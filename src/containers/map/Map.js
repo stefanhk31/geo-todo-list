@@ -29,25 +29,11 @@ class Map extends Component {
   }
 
 
-  // Helper function to format list of points
-
-  getPOIList() {
-    if (this.state.points.length > 0) {
-      let param = '&poi=';
-      for (var poi in this.state.points) {
-        param += poi.latitude + ',' + poi.longitude;
-      }
-      return param;
-    }
-
-    return '';
-  }
-
   // Render method builds the URL dynamically to fetch the image from the
   // HERE Map Image API
 
   render() {
-    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}${this.getPOIList()}`;
+    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}`; //${this.props.getPOIList()}
 
     return (
       <img
