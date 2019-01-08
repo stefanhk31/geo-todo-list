@@ -24,7 +24,7 @@ class App extends Component {
       items: initTasks,
       currentItem: initItem,
       filterKey: 'All',
-      coords: null
+      coords: []
     }
   }
 

@@ -14,8 +14,7 @@ class Map extends Component {
     }
   }
 
-// Set map to user's location on load
-
+  // Set map to user's location on load
   componentDidMount() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -28,25 +27,32 @@ class Map extends Component {
     }
   }
 
-  // Helper function to format list of points
+  //Update state if an address has been entered
+  static getDerivedStateFromProps(props, state) {
+    if (props.coords !== state.points) {
+      return {
+        points: props.coords
+      };
+    }
+  }
+
+  // Helper function to format list of points--currently returning undefined for i.Lat & i.Long, need to debug
 
   getPOIList = () => {
-    if (this.state.points.length > 0) {
-      let param = '&poi=';
-      for (var poi in this.state.points) {
-        param += poi.latitude + ',' + poi.longitude;
-      }
-      return param;
-    }
-
-    return '';
-  } 
-
+      console.log(this.state.points) 
+      var param = '&poi=';
+       for (let i in this.state.points) {
+         param += this.state.points[i].Latitude + ',' + this.state.points[i].Longitude + ',';
+       }
+       console.log(param)
+       return param;
+   } 
+  
   // Render method builds the URL dynamically to fetch the image from the
   // HERE Map Image API
 
   render() {
-    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}`; //${this.props.getPOIList()}
+    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}${this.getPOIList()}`
 
     return (
       <img

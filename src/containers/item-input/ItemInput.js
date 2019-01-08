@@ -30,9 +30,20 @@ export default class ItemInput extends Component {
     apiServices.getGeocode(this.state.item.address)
       .then(geocode => {
         // get address coordinates from resulting JSON object
-        const coords= geocode.Response.View[0].Result[0].Location.DisplayPosition;
-        const points = this.state.item.points;
+        const coords = geocode.Response.View[0].Result[0].Location.DisplayPosition;
+        
+        //add coords to points array
+        let points = this.state.item.points;
         points.push(coords)
+        
+        //filter out duplicate coordinates
+        points = points.filter((el, index, self) =>
+          index === self.findIndex((x) => (
+            x.Latitiude === el.Latitiude && x.Longitude === el.Longitude
+          ))
+        )
+
+        //update state with new points
         this.setState({
           points: points
         })
