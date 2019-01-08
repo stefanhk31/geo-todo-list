@@ -26,34 +26,7 @@ export default class ItemInput extends Component {
     // Prevent form submission
     e.preventDefault();
 
-    //geocode address using HERE Geocoder API
-    apiServices.getGeocode(this.state.item.address)
-      .then(geocode => {
-        // get address coordinates from resulting JSON object
-        const coords = geocode.Response.View[0].Result[0].Location.DisplayPosition;
-        
-        //add coords to points array
-        let points = this.state.item.points;
-        points.push(coords)
-        
-        //filter out duplicate coordinates
-        points = points.filter((el, index, self) =>
-          index === self.findIndex((x) => (
-            x.Latitiude === el.Latitiude && x.Longitude === el.Longitude
-          ))
-        )
-
-        //update state with new points
-        this.setState({
-          points: points
-        })
-        this.props.coordsCallback(points)
-      })
-      .catch(error => {
-        console.log('error', error);
-      });
-
-    // make sure both fields are not empty
+    // make sure fields are not empty
     if (this.isValidItem()) {
       // Add new item
       const item = {
@@ -64,7 +37,49 @@ export default class ItemInput extends Component {
         points: this.state.item.points
       };
 
-      this.props.onAddItem(item);      
+      this.props.onAddItem(item);
+
+      //geocode address using HERE Geocoder API
+      apiServices.getGeocode(this.state.item.address)
+        .then(geocode => {
+          // get address coordinates from resulting JSON object
+          const coords = geocode.Response.View[0].Result[0].Location.DisplayPosition;
+
+          // attach task name and location to coords object
+          Object.defineProperty(coords, 'Text', {
+            value: item.text,
+            writable: true,
+            enumerable: true,
+            configurable: true
+          })
+          
+          Object.defineProperty(coords, 'Location', {
+            value: item.location,
+            writable: true,
+            enumerable: true,
+            configurable: true
+          })
+
+          //add coords to points array
+          let points = this.state.item.points;
+          points.push(coords)
+
+          //filter out duplicate coordinates
+          points = points.filter((el, index, self) =>
+            index === self.findIndex((x) => (
+              x.Latitiude === el.Latitiude && x.Longitude === el.Longitude
+            ))
+          )
+
+          //update state with new points, send points to parent App
+          this.setState({
+            points: points
+          })
+          this.props.coordsCallback(points)
+        })
+        .catch(error => {
+          console.log('error', error);
+        });
 
       // reset state variables of text, location, address
       this.setState({

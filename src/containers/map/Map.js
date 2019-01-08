@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-const BASE_MAP_URL = 'https://image.maps.api.here.com/mia/1.6/mapview?';
+const BASE_MAP_URL = 'https://image.maps.api.here.com/mia/1.6/mapview';
+const DEFAULT_COORDS = 'c=35.9641%2C-83.9202'
+const DEFAULT_MAP_SETTINGS = 'w=600&h=300&z=12&t=5&poitxs=16&poitxc=white&poifc=blue';
 
 class Map extends Component {
 
@@ -9,7 +11,7 @@ class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: `${BASE_MAP_URL}w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow`,
+      url: `${BASE_MAP_URL}?${DEFAULT_COORDS}&${DEFAULT_MAP_SETTINGS}`,
       points: [],
     }
   }
@@ -20,7 +22,7 @@ class Map extends Component {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           this.setState({
-            url: `${BASE_MAP_URL}c=${position.coords.latitude}%2C${position.coords.longitude}&w=600&h=300&z=12&t=5&poitxs=16&poitxc=black&poifc=yellow`
+            url: `${BASE_MAP_URL}?c=${position.coords.latitude}%2C${position.coords.longitude}&${DEFAULT_MAP_SETTINGS}`
           });
         },
       );
@@ -36,15 +38,13 @@ class Map extends Component {
     }
   }
 
-  // Helper function to format list of points--currently returning undefined for i.Lat & i.Long, need to debug
+  // Helper function to format list of points
 
   getPOIList = () => {
-      console.log(this.state.points) 
-      var param = '&poi=';
+    var param = '&poi=';
        for (let i in this.state.points) {
          param += this.state.points[i].Latitude + ',' + this.state.points[i].Longitude + ',';
        }
-       console.log(param)
        return param;
    } 
   
