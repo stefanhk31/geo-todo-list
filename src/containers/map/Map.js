@@ -1,20 +1,34 @@
 import React, { Component } from 'react';
+import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
 
-const BASE_MAP_URL = 'https://image.maps.api.here.com/mia/1.6/mapview';
-const DEFAULT_COORDS = 'c=35.9641%2C-83.9202'
-const DEFAULT_MAP_SETTINGS = 'w=600&h=300&z=12&t=5&poitxs=16&poitxc=white&poifc=FF8E06&poithm=0'
+const token = process.env.REACT_APP_API_KEY;
 
+//set initial viewport parameters
+const initViewport = {
+  latitude: 0,
+  longitude: 0,
+  zoom: 12,
+  width: window.innerWidth,
+  height: window.innerHeight
+}
+
+//set navigation controls
+const navStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  padding: '10px'
+};
 
 class Map extends Component {
-
-  // For conciseness simply include all parameters in the querystring directly
 
   constructor(props) {
     super(props);
     this.state = {
-      url: `${BASE_MAP_URL}?${DEFAULT_COORDS}&${DEFAULT_MAP_SETTINGS}`,
+      viewport: initViewport,
       points: [],
-    }
+      popupInfo: null
+    };
   }
 
   // Set map to user's location on load
@@ -22,11 +36,17 @@ class Map extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          const userLatitude = position.coords.latitude
+          const userLongitude = position.coords.longitude
           this.setState({
-            url: `${BASE_MAP_URL}?c=${position.coords.latitude}%2C${position.coords.longitude}&${DEFAULT_MAP_SETTINGS}`
-          });
-        },
-      );
+            viewport: {
+              ...initViewport,
+              latitude: userLatitude,
+              longitude: userLongitude,
+            }
+          })
+        }
+      )
     }
   }
 
@@ -39,39 +59,46 @@ class Map extends Component {
     }
   }
 
-  /* Helper function to format list of points (provides marker, but not custom text)
+  _updateViewport = (viewport) => {
+    this.setState({ viewport })
+  };
 
-  getPOIList = () => {
-    var param = '&poi=';
-       for (let i in this.state.points) {
-         param += `${this.state.points[i].Latitude},${this.state.points[i].Longitude},`
-       }
-       return param;
-   }
+  //Create marker for every location on list *NEED TO DEBUG: why aren't Markers showing up?
+  _renderMarkers = (point, index) => {
+    return (
+      <Marker
+        key={`marker-${index}`}
+        latitude={point.Latitude}
+        longitude={point.Longitude}>
+        <div>{point.Location}</div>
+      </Marker>
+    )
+  }
 
-   */
-   
-   // Helper function to provide custom text for each location
+  //create pop-up with List (still to be done)
 
-   getLocationList = () => {
-    var locs = '&'
-    for (let i in this.state.points) {
-      var capsLoc = this.state.points[i].Location.toUpperCase()
-      locs += `tx${i}=${this.state.points[i].Latitude}%2C${this.state.points[i].Longitude};${capsLoc};FC8100;white;18;&`
-    }
-    return locs;
-   }
-  
-  // Render method builds the URL dynamically to fetch the image from the
-  // HERE Map Image API
 
   render() {
-    const imageSrc = `${this.state.url}&app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}${this.getLocationList()}`
-    
+    const { viewport } = this.state;
+    const points = this.state.points;
+
     return (
-      <img
-        src={imageSrc}
-        alt="Todo Map"/>
+      <div className="map-container" id="map">
+        <MapGL
+          {...viewport}
+          mapStyle='mapbox://styles/mapbox/streets-v9'
+          mapboxApiAccessToken={token}
+          onViewportChange={this._updateViewport}
+        >
+
+          {points.map(this._renderMarkers)}
+
+          <div className="nav" style={navStyle}>
+            <NavigationControl onViewportChange={this._updateViewport} />
+          </div>
+
+        </MapGL>
+      </div>
     );
   }
 }
