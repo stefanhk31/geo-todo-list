@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
+import TaskInfo from '../../components/task-info/TaskInfo';
 
 const token = process.env.REACT_APP_API_KEY;
 
@@ -27,7 +28,7 @@ class Map extends Component {
     this.state = {
       viewport: initViewport,
       coordinates: [],
-      popupInfo: null
+      popupInfo: null,
     };
   }
 
@@ -65,20 +66,44 @@ class Map extends Component {
     this.setState({ viewport })
   };
 
+  handleUpdatePopupInfo = (popupInfo) => {
+    this.setState({
+      popupInfo,
+    });
+  }
+
   //Create marker for every location on list *NEED TO DEBUG: why aren't Markers showing up?
   _renderMarkers = (point, index) => {
     return (
       <Marker
         key={`marker-${index}`}
         latitude={point.latitude}
-        longitude={point.longitude}>
-        <div>{point.location}</div>
+        longitude={point.longitude}
+      >
+       <i
+        className="fas fa-map-pin todo-map-marker"
+        onClick={() => this.handleUpdatePopupInfo(point)}
+      ></i>
       </Marker>
     )
   }
 
   //create pop-up with List (still to be done)
+  _renderPopup() {
+    const { popupInfo } = this.state;
 
+    return popupInfo && (
+      <Popup tipSize={5}
+        anchor="bottom"
+        longitude={popupInfo.longitude}
+        latitude={popupInfo.latitude}
+        closeOnClick={false}
+        onClose={() => this.handleUpdatePopupInfo(null)}
+      >
+        <TaskInfo {...popupInfo} />
+      </Popup>
+    );
+  }
 
   render() {
     const { viewport, coordinates } = this.state;
@@ -93,6 +118,8 @@ class Map extends Component {
         >
 
           { coordinates.map(this._renderMarkers) }
+
+          { this._renderPopup() }
 
           <div className="nav" style={navStyle}>
             <NavigationControl onViewportChange={this._updateViewport} />
