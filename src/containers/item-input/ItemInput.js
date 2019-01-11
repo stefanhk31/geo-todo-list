@@ -12,7 +12,7 @@ export default class ItemInput extends Component {
         address: '', 
         location: '',
         text: '',
-        points: []
+        coordinates: null,
       },
       isValid: true,
     }
@@ -32,55 +32,28 @@ export default class ItemInput extends Component {
     if (this.isValidItem()) {
       // Add new item
       const item = {
+        ...this.state.item,
         key: Date.now(),
         address: this.state.item.address.trim().toLowerCase(),
         location: this.state.item.location.trim().toLowerCase(),
         text: this.state.item.text.trim().toLowerCase(),
-        points: this.state.item.points
       };
 
-      this.props.onAddItem(item);
+      // this.props.onAddItem(item);
 
-      //geocode address using HERE Geocoder API
-      apiServices.getGeocode(this.state.item.address)
-        .then(geocode => {
-          // get address coordinates from resulting JSON object
-          const coords = geocode.Response.View[0].Result[0].Location.DisplayPosition;
+      // get coordinate from address entered using HERE Geocoder API
+      apiServices.getCoordinates(item.address)
+        .then(coordinates => {
+          // add coordinate to address get address coordinates from resulting JSON object
+          item.coordinates = coordinates;
 
-          // attach task name and location to coords object
-          Object.defineProperty(coords, 'Text', {
-            value: item.text,
-            writable: true,
-            enumerable: true,
-            configurable: true
-          })
-          
-          Object.defineProperty(coords, 'Location', {
-            value: item.location,
-            writable: true,
-            enumerable: true,
-            configurable: true
-          })
-
-          //add coords to points array
-          let points = this.state.item.points;
-          points.push(coords)
-
-          //filter out duplicate coordinates
-          points = points.filter((el, index, self) =>
-            index === self.findIndex((x) => (
-              x.Latitiude === el.Latitiude && x.Longitude === el.Longitude
-            ))
-          )
-
-          //update state with new points, send points to parent App
-          this.setState({
-            points: points
-          })
-          this.props.coordsCallback(points)
+          // add item to list of tasks in parent
+          this.props.onAddItem(item);
         })
         .catch(error => {
-          console.log('error', error);
+          console.log(error.message);
+          // could not get coordinates so just add item with null coordinates
+          this.props.onAddItem(item);
         });
 
       // reset state variables of text, location, address
@@ -89,7 +62,7 @@ export default class ItemInput extends Component {
           text: '',
           location: '',
           address: '',
-          points: this.state.item.points
+          coordinates: [],
         },
         isValid: true,
       });
@@ -117,6 +90,7 @@ export default class ItemInput extends Component {
         <div className="list-header">
           <form onSubmit={this.handleSubmit}>
             <input
+              type="text"
               placeholder="Task"
               name="text"
               value={this.state.item.text}
@@ -124,6 +98,7 @@ export default class ItemInput extends Component {
             />
 
             <input
+              type="text"
               placeholder="Location"
               name="location"
               value={this.state.item.location}
@@ -131,6 +106,7 @@ export default class ItemInput extends Component {
             />
 
             <input
+              type="text"
               placeholder="Address"
               name="address"
               value={this.state.item.address}
@@ -149,7 +125,7 @@ export default class ItemInput extends Component {
         <FilterSelect
           locationKeys={this.props.locationKeys}
           filterKey={this.props.filterKey}
-          onFilterLocation={this.props.onFilterLocation}
+          onFilterTaskLocations={this.props.onFilterTaskLocations}
         />
     </div>
     )

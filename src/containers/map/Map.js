@@ -26,7 +26,7 @@ class Map extends Component {
     super(props);
     this.state = {
       viewport: initViewport,
-      points: [],
+      coordinates: [],
       popupInfo: null
     };
   }
@@ -52,9 +52,9 @@ class Map extends Component {
 
   //Update state if an address has been entered
   static getDerivedStateFromProps(props, state) {
-    if (props.coords !== state.points) {
+    if (props.coordinates !== state.coordinates) {
       return {
-        points: props.coords
+        coordinates: props.coordinates,
       };
     }
 
@@ -70,9 +70,9 @@ class Map extends Component {
     return (
       <Marker
         key={`marker-${index}`}
-        latitude={point.Latitude}
-        longitude={point.Longitude}>
-        <div>{point.Location}</div>
+        latitude={point.latitude}
+        longitude={point.longitude}>
+        <div>{point.location}</div>
       </Marker>
     )
   }
@@ -81,8 +81,7 @@ class Map extends Component {
 
 
   render() {
-    const { viewport } = this.state;
-    const points = this.state.points;
+    const { viewport, coordinates } = this.state;
 
     return (
       <div className="map-container" id="map">
@@ -93,7 +92,7 @@ class Map extends Component {
           onViewportChange={this._updateViewport}
         >
 
-          {points.map(this._renderMarkers)}
+          { coordinates.map(this._renderMarkers) }
 
           <div className="nav" style={navStyle}>
             <NavigationControl onViewportChange={this._updateViewport} />
