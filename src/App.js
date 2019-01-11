@@ -10,8 +10,34 @@ class App extends Component {
     super(props);
 
     const initTasks = {
-      home: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'home'})),
-      work: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'work'})),
+      utk: [{
+        key: 1547216683236,
+        address: "37919",
+        location: "utk",
+        text: "go to school",
+        points: [
+          {
+            Latitude: 35.94268,
+            Longitude: -83.98353,
+            Location: "utk",
+            Text: "go to school",
+          },
+        ],
+      }],
+      bearden: [{
+        key: 1547219983236,
+        address: "37996",
+        location: "bearden",
+        text: "grocery shop",
+        points: [
+          {
+            Latitude: 35.9526,
+            Location: "bearden",
+            Longitude: -83.92647,
+            Text: "grocery shop",
+          },
+        ],
+      }],
     };
 
     const initItem = {
@@ -65,6 +91,7 @@ class App extends Component {
   }
 
   handleDeleteItem = item => {
+    console.log('delete item', item);
     const key = item.key
     const listItems = this.state.items[item.location].filter(item => item.key !== key)
     var allItems = this.state.items

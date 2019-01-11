@@ -57,6 +57,8 @@ class Map extends Component {
         points: props.coords
       };
     }
+
+    return null;
   }
 
   _updateViewport = (viewport) => {

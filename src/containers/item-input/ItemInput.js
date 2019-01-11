@@ -9,9 +9,9 @@ export default class ItemInput extends Component {
 
     this.state = {
       item: {
-        text: '',
-        location: '',
         address: '', 
+        location: '',
+        text: '',
         points: []
       },
       isValid: true,
@@ -19,7 +19,9 @@ export default class ItemInput extends Component {
   }
 
   isValidItem = () => {
-    return this.state.item.text.trim() !== '' && this.state.item.location.trim() !== '' && this.state.item.address.trim() !== '';
+    return this.state.item.text.trim() !== '' &&
+           this.state.item.location.trim() !== '' &&
+           this.state.item.address.trim() !== '';
   }
 
   handleSubmit = (e) => {
@@ -31,9 +33,9 @@ export default class ItemInput extends Component {
       // Add new item
       const item = {
         key: Date.now(),
-        text: this.state.item.text.trim().toLowerCase(),
-        location: this.state.item.location.trim().toLowerCase(),
         address: this.state.item.address.trim().toLowerCase(),
+        location: this.state.item.location.trim().toLowerCase(),
+        text: this.state.item.text.trim().toLowerCase(),
         points: this.state.item.points
       };
 
