@@ -10,28 +10,36 @@ class App extends Component {
     super(props);
 
     const initTasks = {
-      home: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'home'})),
-      work: Array(2).fill(null).map((item, index) => ({key: index + Math.random() * Math.random(), text: `Task ${index + 1}`, location: 'work'})),
-    };
-
-    const initItem = {
-      text: '',
-      location: '',
-      key: ''
+      bearden: [
+        {
+          key: 1547216683236,
+          address: "37919",
+          location: "bearden",
+          text: "eat",
+          coordinates: {
+            latitude: 35.94268,
+            longitude: -83.98353,
+          },
+        }
+      ],
+      utk: [
+        {
+          key: 1547219983236,
+          address: "37996",
+          location: "utk",
+          text: "go to school",
+          coordinates: {
+            latitude: 35.9526,
+            longitude: -83.92647,
+          },
+        }
+      ],
     };
 
     this.state = {
       items: initTasks,
-      currentItem: initItem,
       filterKey: 'All',
-      coords: []
     }
-  }
-
-  coordsCallback = (coords) => {
-    this.setState({
-      coords: coords
-    })
   }
 
   handleAddItem = item => {
@@ -52,64 +60,75 @@ class App extends Component {
     });
   }
 
-  setLocation = e => {
-    const location = e.target.value;
-    const currentItem = {
-      text: this.state.currentItem.text,
-      location: location,
-      key: this.state.currentItem.key
-    }
-    this.setState({
-      currentItem: currentItem
-    })
-  }
-
   handleDeleteItem = item => {
+    let allItems = {...this.state.items};
     const key = item.key
-    const listItems = this.state.items[item.location].filter(item => item.key !== key)
-    var allItems = this.state.items
+    const listItems = this.state.items[item.location]
+      .filter(item => item.key !== key)
 
-    //set array of item.location to array that has filtered out the deleted item
-    if (this.state.items.hasOwnProperty(item.location)) {
-      allItems[item.location] = listItems
+    // If no more list items, delete location from allItems
+    if (listItems.length === 0) {
+      delete allItems[item.location];
+    } else {
+      // else update allItems with new listItems locations
+      allItems[item.location] = listItems;
     }
 
-    //delete the list if there are no more items
-    if (allItems[item.location].length === 0) {
-      delete allItems[item.location]
-    }
-
-    //update state with item deleted
+    // update state with item deleted
     this.setState({
       items: allItems
-    })
+    });
   }
 
-  handleFilterLocation = (e) => {
+  handleFilterTaskLocations = (e) => {
     this.setState({
       filterKey: e.target.value,
     });
   };
 
+  getCoordinates = (location) => {
+    let coordinates = [];
+    const mapTasks = task => ({
+      latitude: task.coordinates.latitude,
+      longitude: task.coordinates.longitude,
+      text: task.text,
+      location: task.location,
+    });
+
+    if (location === 'All') {
+      const itemValues = Object.values(this.state.items); // convert items object to array of values
+      coordinates = itemValues.map(loc => loc.map(mapTasks))
+        .reduce((acc, curr) => acc.concat(curr), []); // flatten nested arrays
+    } else {
+      const tasks = this.state.items[location];
+      coordinates = tasks.map(mapTasks);
+    }
+
+    return coordinates;
+  }
+
   render() {
     let filteredItems;
+    let coordinates;
 
+    // Get filteredItems and coordinates
     if (this.state.filterKey === 'All') {
       filteredItems = Object.assign({}, this.state.items);
+      coordinates = this.getCoordinates('All');
     } else {
       const obj = {};
       obj[this.state.filterKey] = [...this.state.items[this.state.filterKey]];
       filteredItems = obj;
+      coordinates = this.getCoordinates(this.state.filterKey);
     }
 
     return (
       <div className="App">
         <div className="todo-container">
           <ItemInput
-            coordsCallback={this.coordsCallback}
             onAddItem={this.handleAddItem}
             locationKeys={Object.keys(this.state.items)}
-            onFilterLocation={this.handleFilterLocation}
+            onFilterTaskLocations={this.handleFilterTaskLocations}
             filterKey={this.state.filterKey}
           />
 
@@ -118,7 +137,7 @@ class App extends Component {
             onDeleteItem={this.handleDeleteItem}
           />
         </div>
-        <Map coords={this.state.coords} />
+        <Map coordinates={coordinates} />
       </div>
     );
   }
