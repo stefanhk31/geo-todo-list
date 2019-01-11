@@ -9,7 +9,6 @@ const apiServices = {
       .then(response => response.json())
       .then(data => {
         // check for good status
-        console.log('data', data);
         // If view is empty, no locations so return null
         if (data.Response.View.length === 0) return null;
 
@@ -26,11 +25,9 @@ const apiServices = {
         };
       })
       .catch(error => {
-        console.log(error.message);
         return null;
       });
 
-    console.log('coords', coordinates);
     return coordinates;
   },
 };
