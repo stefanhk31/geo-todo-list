@@ -13,7 +13,7 @@ export default function FilterSelect(props) {
         name="filter"
         id="filter"
         value={props.filterKey}
-        onChange={props.onFilterLocation}
+        onChange={props.onFilterTaskLocations}
       >
         <option value="All">ALL TASKS</option>
         { options }

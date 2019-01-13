@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
+import TaskInfo from '../../components/task-info/TaskInfo';
 
 const token = process.env.REACT_APP_API_KEY;
 
@@ -26,8 +27,8 @@ class Map extends Component {
     super(props);
     this.state = {
       viewport: initViewport,
-      points: [],
-      popupInfo: null
+      coordinates: [],
+      popupInfo: null,
     };
   }
 
@@ -52,35 +53,60 @@ class Map extends Component {
 
   //Update state if an address has been entered
   static getDerivedStateFromProps(props, state) {
-    if (props.coords !== state.points) {
+    if (props.coordinates !== state.coordinates) {
       return {
-        points: props.coords
+        coordinates: props.coordinates,
       };
     }
+
+    return null;
   }
 
   _updateViewport = (viewport) => {
     this.setState({ viewport })
   };
 
+  handleUpdatePopupInfo = (popupInfo) => {
+    this.setState({
+      popupInfo,
+    });
+  }
+
   //Create marker for every location on list *NEED TO DEBUG: why aren't Markers showing up?
   _renderMarkers = (point, index) => {
     return (
       <Marker
         key={`marker-${index}`}
-        latitude={point.Latitude}
-        longitude={point.Longitude}>
-        <div>{point.Location}</div>
+        latitude={point.latitude}
+        longitude={point.longitude}
+      >
+       <i
+        className="fas fa-map-pin todo-map-marker"
+        onClick={() => this.handleUpdatePopupInfo(point)}
+      ></i>
       </Marker>
     )
   }
 
   //create pop-up with List (still to be done)
+  _renderPopup() {
+    const { popupInfo } = this.state;
 
+    return popupInfo && (
+      <Popup tipSize={5}
+        anchor="bottom"
+        longitude={popupInfo.longitude}
+        latitude={popupInfo.latitude}
+        closeOnClick={false}
+        onClose={() => this.handleUpdatePopupInfo(null)}
+      >
+        <TaskInfo {...popupInfo} />
+      </Popup>
+    );
+  }
 
   render() {
-    const { viewport } = this.state;
-    const points = this.state.points;
+    const { viewport, coordinates } = this.state;
 
     return (
       <div className="map-container" id="map">
@@ -91,7 +117,9 @@ class Map extends Component {
           onViewportChange={this._updateViewport}
         >
 
-          {points.map(this._renderMarkers)}
+          { coordinates.map(this._renderMarkers) }
+
+          { this._renderPopup() }
 
           <div className="nav" style={navStyle}>
             <NavigationControl onViewportChange={this._updateViewport} />

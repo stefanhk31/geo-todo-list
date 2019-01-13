@@ -2,19 +2,33 @@ const BASE_URL = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${proces
 
 const apiServices = {
   // Using FETCH api to GET geocode of user's address entered
-  async getGeocode(address) {
+  async getCoordinates(address) {
     const url = `${BASE_URL}&searchtext=${address}`;
 
-    const geocode = await fetch(url)
-      .then(response => {
+    const coordinates = await fetch(url)
+      .then(response => response.json())
+      .then(data => {
         // check for good status
-        if (response.status !== 200) return null;
+        // If view is empty, no locations so return null
+        if (data.Response.View.length === 0) return null;
 
-        return response.json();
+        // Access first relevant location, if non-existent return null
+        const coordinates = data.Response
+          .View[0]
+          .Result[0]
+          .Location
+          .DisplayPosition;
+
+        return {
+          latitude: coordinates.Latitude,
+          longitude: coordinates.Longitude,
+        };
       })
-      .catch(error => null);
+      .catch(error => {
+        return null;
+      });
 
-    return geocode;
+    return coordinates;
   },
 };
 
