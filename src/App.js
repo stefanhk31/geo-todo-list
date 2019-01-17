@@ -137,7 +137,9 @@ class App extends Component {
             onDeleteItem={this.handleDeleteItem}
           />
         </div>
-        <Map coordinates={coordinates} />
+        <div className="map-container">
+          <Map coordinates={coordinates} />
+        </div>
       </div>
     );
   }

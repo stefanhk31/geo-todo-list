@@ -1,25 +1,21 @@
 .App {
+  display: flex;
+  flex-direction: row;
   text-align: left;
   margin: 0;
   padding: 0;
+  background-color:#008CFC;
+  color: white;
 }
 
 .todo-container {
-  background-color: white;
-  width: fit-width;
-  border: 3px solid black;
-  border-radius: 15px;
-  padding: .5em;
+  padding: .5em; 
   position: relative;
-  margin: 1em;
+  margin: 1em; 
   z-index: 1;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.todo-container > * {
-  flex: 1 0 50%;
+  flex-flow: row wrap;
+  flex: 1 0 33%;
 }
 
 // Filter Styles
@@ -32,29 +28,59 @@
 }
 
 // List Styles
+.list-input {
+  display: flex;
+  flex-direction: column;
+  height: 33%;
+  justify-content: space-around;
+  padding: 0;
+}
+
+.list-input > * {
+  width: 33vw;
+}
+
 .list {
   list-style: none;
   padding: 0;
 }
 
+ .list-form {
+  display: flex;
+  flex-direction: column;
+}
+
 .list--parent {
   display: flex;
-  flex-wrap: wrap;
+  height: 67%;
+  flex-flow: row wrap;
+  flex: 2 0 67%;
 }
 
 .list--parent > .list__item {
-  flex: 0 0 100%;
   border-radius: 0.5em;
-  border: 1px solid rgb(200, 200, 200);
-  margin: 0.25em 0;
+  border: 1px solid #5a6268;
+  background-color: #001A67;
+  flex: 0 0 100%;
+  margin: .5em;
   padding: 0.5em;
+}
+
+.mapboxgl-popup-content {
+  position: relative;
+  background: #008CFC;
+  border: 3px #5a6268 solid;
+  border-radius: .5em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px 10px 15px;
+  pointer-events: auto;
 }
 
 @media screen and (min-width: 600px) {
   .list--parent > .list__item {
     flex: 0 0 calc(50% - 1em);
     margin: 0.5em;
-  }
+  } 
 }
 
 .list__item--child__checkbox {
@@ -66,3 +92,15 @@
 .error-message {
   color: rgb(177, 3, 3);
 }
+
+//Mobile settings
+@media screen and (max-width: 600px) {
+  .App {
+    flex-direction: column;
+  }
+
+  .list-input > * {
+    width: 85vw;
+  }  
+
+} 

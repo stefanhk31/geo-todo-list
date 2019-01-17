@@ -72,7 +72,7 @@ class Map extends Component {
     });
   }
 
-  //Create marker for every location on list *NEED TO DEBUG: why aren't Markers showing up?
+  //Create marker for every location on list 
   _renderMarkers = (point, index) => {
     return (
       <Marker
@@ -81,14 +81,14 @@ class Map extends Component {
         longitude={point.longitude}
       >
        <i
-        className="fas fa-map-pin todo-map-marker"
+        className="fas fa-map-pin fa-2x todo-map-marker"
         onClick={() => this.handleUpdatePopupInfo(point)}
       ></i>
       </Marker>
     )
   }
 
-  //create pop-up with List (still to be done)
+  //create pop-up with List 
   _renderPopup() {
     const { popupInfo } = this.state;
 
