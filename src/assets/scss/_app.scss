@@ -1,21 +1,38 @@
 .App {
   display: flex;
-  flex-direction: row;
-  text-align: left;
-  margin: 0;
-  padding: 0;
-  background-color:#63ccff;
+  flex-direction: column;
+  background-color: #63ccff;
   color: #fff;
 }
 
 .todo-container {
-  padding: .5em; 
-  position: relative;
-  margin: 1em; 
-  z-index: 1;
-  display: flex;
-  flex-flow: row wrap;
-  flex: 1 0 33%;
+  padding: 1em;
+}
+
+.map-container {
+  overflow: hidden; // prevents map from bleeding outside container
+
+  @media screen and (max-width: 599px) {
+    max-height: 50vh;
+  }
+}
+
+// Mobile Responsive
+// Default styles are for small screens
+// Screens greater than 600px will flex to a row
+@media screen and (min-width: 600px) {
+  .App {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .todo-container {
+    flex: 1 0 33%;
+  }
+
+  .map-container {
+    flex: 1 0 66%;
+  }
 }
 
 // Filter Styles
@@ -33,10 +50,6 @@
   flex-direction: column;
   justify-content: space-evenly;
   padding: 0;
-}
-
-.list-input > * {
-  width: 33vw;
 }
 
 .list {
@@ -64,6 +77,14 @@
   padding: 0.5em;
 }
 
+// Mobile List Styles
+@media screen and (min-width: 600px) {
+  .list--parent > .list__item {
+    flex: 0 0 calc(50% - 1em);
+    margin: 0.5em;
+  } 
+}
+
 .btn-secondary {
   color: #fff;
   background-color: #757575;
@@ -81,12 +102,6 @@
   pointer-events: auto;
 }
 
-@media screen and (min-width: 600px) {
-  .list--parent > .list__item {
-    flex: 0 0 calc(50% - 1em);
-    margin: 0.5em;
-  } 
-}
 
 .list__item--child__checkbox {
   display: inline-block;
@@ -97,15 +112,3 @@
 .error-message {
   color: #f44336;
 }
-
-//Mobile settings
-@media screen and (max-width: 600px) {
-  .App {
-    flex-direction: column;
-  }
-
-  .list-input > * {
-    width: 85vw;
-  }  
-
-} 

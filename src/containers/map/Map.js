@@ -10,7 +10,7 @@ const initViewport = {
   longitude: 0,
   zoom: 12,
   width: window.innerWidth,
-  height: window.innerHeight
+  height: window.innerHeight - 1
 }
 
 //set navigation controls
@@ -109,24 +109,22 @@ class Map extends Component {
     const { viewport, coordinates } = this.state;
 
     return (
-      <div className="map-container" id="map">
-        <MapGL
-          {...viewport}
-          mapStyle='mapbox://styles/mapbox/streets-v9'
-          mapboxApiAccessToken={token}
-          onViewportChange={this._updateViewport}
-        >
+      <MapGL
+        {...viewport}
+        mapStyle='mapbox://styles/mapbox/streets-v9'
+        mapboxApiAccessToken={token}
+        onViewportChange={this._updateViewport}
+      >
 
-          { coordinates.map(this._renderMarkers) }
+        { coordinates.map(this._renderMarkers) }
 
-          { this._renderPopup() }
+        { this._renderPopup() }
 
-          <div className="nav" style={navStyle}>
-            <NavigationControl onViewportChange={this._updateViewport} />
-          </div>
+        <div className="nav" style={navStyle}>
+          <NavigationControl onViewportChange={this._updateViewport} />
+        </div>
 
-        </MapGL>
-      </div>
+      </MapGL>
     );
   }
 }

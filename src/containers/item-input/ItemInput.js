@@ -88,7 +88,7 @@ export default class ItemInput extends Component {
         <div className="list-header">
           <form className="list-form" onSubmit={this.handleSubmit}>
             <input
-              className="form-control"
+              className="form-control mb-1"
               type="text"
               placeholder="Task"
               name="text"
@@ -97,7 +97,7 @@ export default class ItemInput extends Component {
             />
 
             <input
-              className="form-control"
+              className="form-control mb-1"
               type="text"
               placeholder="Location"
               name="location"
@@ -106,7 +106,7 @@ export default class ItemInput extends Component {
             />
 
             <input
-              className="form-control"
+              className="form-control mb-1"
               type="text"
               placeholder="Address"
               name="address"
