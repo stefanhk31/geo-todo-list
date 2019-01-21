@@ -10,7 +10,7 @@ const initViewport = {
   longitude: 0,
   zoom: 12,
   width: window.innerWidth,
-  height: window.innerHeight
+  height: window.innerHeight - 1
 }
 
 //set navigation controls

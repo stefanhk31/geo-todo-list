@@ -7,7 +7,6 @@
 
 .todo-container {
   padding: 1em;
-  overflow-y: auto;
 }
 
 .map-container {
@@ -29,7 +28,6 @@
 
   .todo-container {
     flex: 1 0 33%;
-    max-height: 100vh;
   }
 
   .map-container {
