@@ -72,7 +72,7 @@ class Map extends Component {
     });
   }
 
-  //Create marker for every location on list *NEED TO DEBUG: why aren't Markers showing up?
+  //Create marker for every location on list 
   _renderMarkers = (point, index) => {
     return (
       <Marker
@@ -81,14 +81,14 @@ class Map extends Component {
         longitude={point.longitude}
       >
        <i
-        className="fas fa-map-pin todo-map-marker"
+        className="fas fa-map-pin fa-2x todo-map-marker"
         onClick={() => this.handleUpdatePopupInfo(point)}
       ></i>
       </Marker>
     )
   }
 
-  //create pop-up with List (still to be done)
+  //create pop-up with List 
   _renderPopup() {
     const { popupInfo } = this.state;
 
@@ -109,24 +109,22 @@ class Map extends Component {
     const { viewport, coordinates } = this.state;
 
     return (
-      <div className="map-container" id="map">
-        <MapGL
-          {...viewport}
-          mapStyle='mapbox://styles/mapbox/streets-v9'
-          mapboxApiAccessToken={token}
-          onViewportChange={this._updateViewport}
-        >
+      <MapGL
+        {...viewport}
+        mapStyle='mapbox://styles/mapbox/streets-v9'
+        mapboxApiAccessToken={token}
+        onViewportChange={this._updateViewport}
+      >
 
-          { coordinates.map(this._renderMarkers) }
+        { coordinates.map(this._renderMarkers) }
 
-          { this._renderPopup() }
+        { this._renderPopup() }
 
-          <div className="nav" style={navStyle}>
-            <NavigationControl onViewportChange={this._updateViewport} />
-          </div>
+        <div className="nav" style={navStyle}>
+          <NavigationControl onViewportChange={this._updateViewport} />
+        </div>
 
-        </MapGL>
-      </div>
+      </MapGL>
     );
   }
 }

@@ -39,8 +39,6 @@ export default class ItemInput extends Component {
         text: this.state.item.text.trim().toLowerCase(),
       };
 
-      // this.props.onAddItem(item);
-
       // get coordinate from address entered using HERE Geocoder API
       apiServices.getCoordinates(item.address)
         .then(coordinates => {
@@ -86,10 +84,11 @@ export default class ItemInput extends Component {
 
   render() {
     return (
-      <div className="list-main">
+      <div className="list-input">
         <div className="list-header">
-          <form onSubmit={this.handleSubmit}>
+          <form className="list-form" onSubmit={this.handleSubmit}>
             <input
+              className="form-control mb-1"
               type="text"
               placeholder="Task"
               name="text"
@@ -98,6 +97,7 @@ export default class ItemInput extends Component {
             />
 
             <input
+              className="form-control mb-1"
               type="text"
               placeholder="Location"
               name="location"
@@ -106,6 +106,7 @@ export default class ItemInput extends Component {
             />
 
             <input
+              className="form-control mb-1"
               type="text"
               placeholder="Address"
               name="address"
@@ -113,7 +114,7 @@ export default class ItemInput extends Component {
               onChange={this.handleInput}
             />
 
-            <button type="submit">Add Task</button>
+            <button type="submit" className="btn btn-secondary">Add Task</button>
           </form>
           {
             !this.state.isValid && (
