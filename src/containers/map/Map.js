@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
 import TaskInfo from '../../components/task-info/TaskInfo';
+import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
 const token = process.env.REACT_APP_API_KEY;
 
@@ -79,6 +80,8 @@ class Map extends Component {
         key={`marker-${index}`}
         latitude={point.latitude}
         longitude={point.longitude}
+        offsetLeft={-point.latitude * .5}
+        offsetTop={-point.latitude * .75}
       >
        <i
         className="fas fa-map-pin fa-2x todo-map-marker"
@@ -115,7 +118,6 @@ class Map extends Component {
         mapboxApiAccessToken={token}
         onViewportChange={this._updateViewport}
       >
-
         { coordinates.map(this._renderMarkers) }
 
         { this._renderPopup() }
