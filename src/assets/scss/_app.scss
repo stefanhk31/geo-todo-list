@@ -65,7 +65,7 @@
 .list--parent {
   display: flex;
   flex-flow: row wrap;
-  flex: 2 0 67%;
+  flex: 2 0 66%;
 }
 
 .list--parent > .list__item {
@@ -91,18 +91,6 @@
   border-color: #757575;
 }
 
-//Map popup styles
-.mapboxgl-popup-content {
-  position: relative;
-  background: #63ccff;
-  border: 3px #757575 solid;
-  border-radius: .5em;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  padding: 10px 10px 15px;
-  pointer-events: auto;
-}
-
-
 .list__item--child__checkbox {
   display: inline-block;
   margin-right: 0.5em;
@@ -110,5 +98,5 @@
 
 // Error styles
 .error-message {
-  color: #f44336;
+  color: #FF0000;
 }

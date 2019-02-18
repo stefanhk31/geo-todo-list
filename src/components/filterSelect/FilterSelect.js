@@ -18,6 +18,24 @@ export default function FilterSelect(props) {
         <option value="All">ALL TASKS</option>
         { options }
       </select>
+
+      <label className="filter__label" htmlFor="distance">Show locations within&nbsp; 
+      <select
+        className="filter__select"
+        name="distance"
+        id="distance"
+        value={props.filterDist}
+        onChange={props.onFilterDistLocations}
+      >
+        <option value="9999"></option>       
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      &nbsp;miles</label>
+
     </div>
   )
 }

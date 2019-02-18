@@ -39,6 +39,7 @@ class App extends Component {
     this.state = {
       items: initTasks,
       filterKey: 'All',
+      filterDist: 9999
     }
   }
 
@@ -86,6 +87,14 @@ class App extends Component {
     });
   };
 
+  handleFilterDistLocations = (e) => {
+    this.setState({
+      filterDist: e.target.value
+    })
+    //Test if dist between user location and each task location is less than or equal to filterDist
+    //If yes, show task location
+  }
+
   getCoordinates = (location) => {
     let coordinates = [];
     const mapTasks = task => ({
@@ -129,7 +138,9 @@ class App extends Component {
             onAddItem={this.handleAddItem}
             locationKeys={Object.keys(this.state.items)}
             onFilterTaskLocations={this.handleFilterTaskLocations}
+            onFilterDistLocations={this.handleFilterDistLocations}
             filterKey={this.state.filterKey}
+            filterDist={this.state.filterDist}
           />
 
           <List

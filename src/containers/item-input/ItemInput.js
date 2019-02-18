@@ -86,11 +86,12 @@ export default class ItemInput extends Component {
     return (
       <div className="list-input">
         <div className="list-header">
+          <p><em>All fields required.</em></p>
           <form className="list-form" onSubmit={this.handleSubmit}>
             <input
               className="form-control mb-1"
               type="text"
-              placeholder="Task"
+              placeholder="Task (eg, Get Groceries)"
               name="text"
               value={this.state.item.text}
               onChange={this.handleInput}
@@ -99,7 +100,7 @@ export default class ItemInput extends Component {
             <input
               className="form-control mb-1"
               type="text"
-              placeholder="Location"
+              placeholder="Location (eg, Supermarket)"
               name="location"
               value={this.state.item.location}
               onChange={this.handleInput}
@@ -108,7 +109,7 @@ export default class ItemInput extends Component {
             <input
               className="form-control mb-1"
               type="text"
-              placeholder="Address"
+              placeholder="Address (eg 123 Fake Street, Knoxville, TN 37912)"
               name="address"
               value={this.state.item.address}
               onChange={this.handleInput}
@@ -126,7 +127,9 @@ export default class ItemInput extends Component {
         <FilterSelect
           locationKeys={this.props.locationKeys}
           filterKey={this.props.filterKey}
+          filterDist={this.props.filterDist}
           onFilterTaskLocations={this.props.onFilterTaskLocations}
+          onFilterDistLocations={this.props.onFilterDistLocations}
         />
     </div>
     )

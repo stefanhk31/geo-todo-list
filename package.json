@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "^2.3.0",
+    "@turf/circle": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
     "@types/react-map-gl": "^4.0.0",
     "deck.gl": "^6.3.1",
     "dotenv": "^6.2.0",
@@ -14,7 +16,8 @@
     "react-dom": "^16.6.3",
     "react-map-gl": "^4.0.2",
     "react-map-gl-geocoder": "^1.5.6",
-    "react-scripts": "^2.1.2"
+    "react-scripts": "^2.1.5",
+    "supercluster": "^6.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
