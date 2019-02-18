@@ -115,6 +115,8 @@ class App extends Component {
     if (this.state.filterKey === 'All') {
       filteredItems = Object.assign({}, this.state.items);
       coordinates = this.getCoordinates('All');
+    } else if (this.state.filterKey === 'Nearest') {
+      //filter by user's location
     } else {
       const obj = {};
       obj[this.state.filterKey] = [...this.state.items[this.state.filterKey]];
