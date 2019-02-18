@@ -24,7 +24,10 @@ export default function FilterSelect(props) {
         className="filter__select"
         name="distance"
         id="distance"
+        value={props.filterDist}
+        onChange={props.onFilterDistLocations}
       >
+        <option value="9999"></option>       
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="25">25</option>

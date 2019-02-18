@@ -127,7 +127,9 @@ export default class ItemInput extends Component {
         <FilterSelect
           locationKeys={this.props.locationKeys}
           filterKey={this.props.filterKey}
+          filterDist={this.props.filterDist}
           onFilterTaskLocations={this.props.onFilterTaskLocations}
+          onFilterDistLocations={this.props.onFilterDistLocations}
         />
     </div>
     )
