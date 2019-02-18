@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
-import PopupInfo from '../../components/popup-info/PopupInfo';
-import Cluster from '../../components/cluster/Cluster';
+import MapGL, {Marker, NavigationControl} from 'react-map-gl';
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
 const token = process.env.REACT_APP_API_KEY;
@@ -30,7 +28,6 @@ class Map extends Component {
     this.state = {
       viewport: initViewport,
       coordinates: [],
-      popupInfo: null,
     };
   }
 
@@ -68,12 +65,6 @@ class Map extends Component {
     this.setState({ viewport })
   };
 
-  handleUpdatePopupInfo = (popupInfo) => {
-    this.setState({
-      popupInfo,
-    });
-  }
-
   //Create marker for every location on list 
   _renderMarkers = (point, index) => {
     return (
@@ -86,27 +77,9 @@ class Map extends Component {
       >
        <i
         className="fas fa-map-pin fa-2x todo-map-marker"
-        onClick={() => this.handleUpdatePopupInfo(point)}
       ></i>
       </Marker>
     )
-  }
-
-  //create pop-up with List 
-  _renderPopup() {
-    const { popupInfo } = this.state;
-
-    return popupInfo && (
-      <Popup tipSize={5}
-        anchor="bottom"
-        longitude={popupInfo.longitude}
-        latitude={popupInfo.latitude}
-        closeOnClick={false}
-        onClose={() => this.handleUpdatePopupInfo(null)}
-      >
-        <PopupInfo {...popupInfo} />
-      </Popup>
-    );
   }
 
   render() {
@@ -120,8 +93,6 @@ class Map extends Component {
         onViewportChange={this._updateViewport}
       >
         { coordinates.map(this._renderMarkers) }
-
-        { this._renderPopup() }
 
         <div className="nav" style={navStyle}>
           <NavigationControl onViewportChange={this._updateViewport} />
