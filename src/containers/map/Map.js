@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
-import TaskInfo from '../../components/task-info/TaskInfo';
+import PopupInfo from '../../components/popup-info/PopupInfo';
 import Cluster from '../../components/cluster/Cluster';
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
@@ -104,7 +104,7 @@ class Map extends Component {
         closeOnClick={false}
         onClose={() => this.handleUpdatePopupInfo(null)}
       >
-        <TaskInfo {...popupInfo} />
+        <PopupInfo {...popupInfo} />
       </Popup>
     );
   }
