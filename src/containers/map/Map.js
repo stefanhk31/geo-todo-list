@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapGL, {Marker, NavigationControl} from 'react-map-gl';
+import MapGL, { Marker, NavigationControl } from 'react-map-gl';
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
 const token = process.env.REACT_APP_API_KEY;
@@ -32,7 +32,7 @@ class Map extends Component {
   }
 
   // Set map to user's location on load
-  componentDidMount() {
+  componentDidUpdate() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -75,9 +75,9 @@ class Map extends Component {
         offsetLeft={-point.latitude * .25}
         offsetTop={-point.latitude * .75}
       >
-       <i
-        className="fas fa-map-pin fa-2x todo-map-marker"
-      ></i>
+        <i
+          className="fas fa-map-pin fa-2x todo-map-marker"
+        ></i>
       </Marker>
     )
   }
@@ -92,7 +92,7 @@ class Map extends Component {
         mapboxApiAccessToken={token}
         onViewportChange={this._updateViewport}
       >
-        { coordinates.map(this._renderMarkers) }
+        {coordinates.map(this._renderMarkers)}
 
         <div className="nav" style={navStyle}>
           <NavigationControl onViewportChange={this._updateViewport} />

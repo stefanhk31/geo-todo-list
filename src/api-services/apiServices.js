@@ -1,9 +1,9 @@
-const BASE_URL = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}`;
+const BASE_URL_HERE = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}`;
 
 const apiServices = {
   // Using FETCH api to GET geocode of user's address entered
   async getCoordinates(address) {
-    const url = `${BASE_URL}&searchtext=${address}`;
+    let url = `${BASE_URL_HERE}&searchtext=${address}`;
 
     const coordinates = await fetch(url)
       .then(response => response.json())
@@ -29,7 +29,8 @@ const apiServices = {
       });
 
     return coordinates;
-  },
-};
+  }
+
+}
 
 export default apiServices;

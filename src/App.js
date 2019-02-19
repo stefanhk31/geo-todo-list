@@ -39,12 +39,30 @@ class App extends Component {
     this.state = {
       items: initTasks,
       filterKey: 'All',
-      filterDist: 9999
+      filterDist: '',
+      userLocation: {
+        latitude: '',
+        longitude: ''
+      }
+    }
+  }
+
+  //Record user location in parent state when app loads
+  componentWillMount() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.setState({
+          userLocation: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }
+        })
+      })
     }
   }
 
   handleAddItem = item => {
-    const items = {...this.state.items};
+    const items = { ...this.state.items };
 
     if (this.state.items.hasOwnProperty(item.location)) {
       items[item.location].push(item);
@@ -62,7 +80,7 @@ class App extends Component {
   }
 
   handleDeleteItem = item => {
-    let allItems = {...this.state.items};
+    let allItems = { ...this.state.items };
     const key = item.key
     const listItems = this.state.items[item.location]
       .filter(item => item.key !== key)
@@ -91,10 +109,9 @@ class App extends Component {
     this.setState({
       filterDist: e.target.value
     })
-    //Test if dist between user location and each task location is less than or equal to filterDist
-    //If yes, show task location
   }
 
+  //Get coordinates of address entered for new location
   getCoordinates = (location) => {
     let coordinates = [];
     const mapTasks = task => ({
@@ -131,6 +148,23 @@ class App extends Component {
       coordinates = this.getCoordinates(this.state.filterKey);
     }
 
+    //Add coordinates to Mapbox Navigation API URL, in addition to user location coordinates
+    if (this.state.filterDist !== '') {
+      const token = process.env.REACT_APP_API_KEY;
+      const radius = parseInt(this.state.filterDist);
+      coordinates = this.getCoordinates('All');
+      const userLatitude = this.state.userLocation.latitude;
+      const userLongitude = this.state.userLocation.longitude;
+      
+      let url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLongitude}%2C${userLatitude}%3B`
+
+      coordinates.forEach(function(element) {
+        url += `${element.longitude}%2C${element.latitude}%3B`
+      })
+      url += `.json?${token}`
+    }
+
+
     return (
       <div className="App">
         <div className="todo-container">
@@ -149,7 +183,7 @@ class App extends Component {
           />
         </div>
         <div className="map-container">
-          <Map coordinates={coordinates} />
+          <Map coordinates={coordinates} userLoc={this.state.userLoc} />
         </div>
       </div>
     );
