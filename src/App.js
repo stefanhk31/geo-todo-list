@@ -39,25 +39,7 @@ class App extends Component {
     this.state = {
       items: initTasks,
       filterKey: 'All',
-      filterDist: '',
-      userLocation: {
-        latitude: '',
-        longitude: ''
-      }
-    }
-  }
-
-  //Record user location in parent state when app loads
-  componentWillMount() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.setState({
-          userLocation: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          }
-        })
-      })
+      filterDist: ''
     }
   }
 
