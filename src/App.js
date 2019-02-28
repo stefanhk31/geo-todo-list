@@ -99,8 +99,6 @@ class App extends Component {
     const mapTasks = task => ({
       latitude: task.coordinates.latitude,
       longitude: task.coordinates.longitude,
-      text: task.text,
-      location: task.location,
     });
 
     if (location === 'All') {
@@ -111,8 +109,13 @@ class App extends Component {
       const tasks = this.state.items[location];
       coordinates = tasks.map(mapTasks);
     }
-
+    console.log(coordinates)
     return coordinates;
+  }
+
+  //Get distance matrix with coordinates of new location
+  getDistanceMatrix = (userCoordinates, taskCoordinates) => {
+    console.log("Let's get a distance matrix!")
   }
 
   render() {
