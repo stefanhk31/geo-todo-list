@@ -1,34 +1,6 @@
-//Import userCoords from state in Map.js component
-import userCoords from '../containers/map/Map'
-
 const BASE_URL_HERE = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}`;
 const BASE_URL_MAPBOX = `https://api.mapbox.com/directions/v5/mapbox/driving/`;
 const token = process.env.REACT_APP_API_KEY;
-
-/* const getUserCoordinates = () => {
-  if (!navigator.geolocation) {
-    return
-  } else {
-    navigator.geolocation.getCurrentPosition((position) => {
-      let userCoordinates = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      }
-      return userCoordinates
-    })
-  }
-} */
-
-/*
-  
-  let url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLongitude}%2C${userLatitude}%3B`
-
-  coordinates.forEach(function(element) {
-    url += `${element.longitude}%2C${element.latitude}%3B`
-  })
-  url += `.json?${token}`
-}
-*/
 
 const apiServices = {
   // Using FETCH api to GET geocode of user's address entered
@@ -57,12 +29,50 @@ const apiServices = {
       .catch(error => {
         return null;
       });
-
-    //Use coordinates to make second API call, to calculate distances
-    let mapbox_url = `${BASE_URL_MAPBOX}${coordinates.longitude},${coordinates.latitude};`
-    console.log(mapbox_url)
     return coordinates;
+  },
+  async getMatrixDistances(userCoordinates = [], taskCoordinates = []) {
+    let user = userCoordinates.join(',') + ';';
+    let tasks = taskCoordinates.map(task => Object.values(task)).flat().reverse()   //.join(',') + ';';
+    const length = tasks.length;
+    for (let i = 0; i < length; i++) {
+      if (i + 1 === length) {
+        tasks[i] += '?'
+      } else if (i % 2 !== 0 && i + 1 !== length) {
+        tasks[i] += ';'
+      } else {
+        tasks[i] += ',';
+      }
+    }
+    tasks = tasks.join('');
+
+    let mapbox_url = `${BASE_URL_MAPBOX}${user}${tasks}access_token=${token}`;
+
+    const distances = await fetch(mapbox_url)
+      .then(response => response.json())
+      .then(data => {
+        // check for good status
+        // If no waypoints are defined, return null
+        if (!data.routes) return null;
+        console.log(data)
+
+      })
+      .catch(error => {
+        return null;
+      });
+    return distances;
   }
 }
+
+/*
+  
+  let url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLongitude}%2C${userLatitude}%3B`
+
+  coordinates.forEach(function(element) {
+    url += `${element.longitude}%2C${element.latitude}%3B`
+  })
+  url += `.json?${token}`
+}
+*/
 
 export default apiServices;

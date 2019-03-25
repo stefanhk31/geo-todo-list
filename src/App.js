@@ -4,8 +4,11 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
+import apiServices from './api-services/apiServices';
 
 class App extends Component {
+  _isMounted = false;
+  
   constructor(props) {
     super(props);
 
@@ -40,9 +43,46 @@ class App extends Component {
       items: initTasks,
       filterKey: 'All',
       filterDist: '',
+      user: {
+        latitude: null,
+        longitude: null
+      }
     }
   }
 
+  // Store geolocation API in a Promise, update them in state
+  getUserCoordinates() {
+    return new Promise((res, rej) => {
+      navigator.geolocation.getCurrentPosition(res, rej);
+    })
+  }
+
+  setUserCoordinatesToState(position) {
+    const userLatitude = position.coords.latitude
+    const userLongitude = position.coords.longitude
+    this.setState({
+      user: {
+        latitude: userLatitude,
+        longitude: userLongitude,
+      }
+    })
+  }
+
+  // Set user location into state on load
+  componentDidMount() {
+    this._isMounted = true;
+    
+    if (this._isMounted && navigator.geolocation) {
+      this.getUserCoordinates()
+        .then(data => this.setUserCoordinatesToState(data))
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  //Add items to state when user inputs
   handleAddItem = item => {
     const items = { ...this.state.items };
 
@@ -109,14 +149,29 @@ class App extends Component {
       const tasks = this.state.items[location];
       coordinates = tasks.map(mapTasks);
     }
-    console.log(coordinates)
     return coordinates;
   }
 
-  //Get distance matrix with coordinates of new location
-  getDistanceMatrix = (userCoordinates, taskCoordinates) => {
-    console.log("Let's get a distance matrix!")
+  getDistances = (coordinates) => {
+    apiServices.getMatrixDistances([this.state.user.longitude, this.state.user.latitude], coordinates)
   }
+
+  // get distance between coordinates and user location using Mapbox Matrix API
+
+
+
+  /*Add coordinates of tasks to an array to look up distances
+  storeTaskCoordinates() {
+    let taskCoordinates = []
+    
+    const length = Object.keys(this.state.items).length;
+    for (let i = 0; i < length; i++) {
+      if (this.state.items[i].hasOwnProperty("coordinates")) {
+        taskCoordinates.push(this.state.items[i].coordinates)
+      }
+      console.log(taskCoordinates)
+    }
+  } */
 
   render() {
     let filteredItems;
@@ -133,10 +188,15 @@ class App extends Component {
       coordinates = this.getCoordinates(this.state.filterKey);
     }
 
+    //Get distance matrix
+    this.getDistances(coordinates);
+
     return (
       <div className="App">
         <div className="todo-container">
           <ItemInput
+            user={this.state.user}
+            coordinates={coordinates}
             onAddItem={this.handleAddItem}
             locationKeys={Object.keys(this.state.items)}
             onFilterTaskLocations={this.handleFilterTaskLocations}
@@ -151,7 +211,10 @@ class App extends Component {
           />
         </div>
         <div className="map-container">
-          <Map coordinates={coordinates} />
+          <Map 
+            coordinates={coordinates}
+            getUserCoordinates={this.getUserCoordinates}
+          />
         </div>
       </div>
     );

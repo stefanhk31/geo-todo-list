@@ -8,20 +8,20 @@ export default class ItemInput extends Component {
     super(props);
 
     this.state = {
-      item: {
-        address: '', 
+      temp_item: {
+        address: '',
         location: '',
         text: '',
-        coordinates: null,
+        coordinates: [],
       },
-      isValid: true,
+      isValid: true
     }
   }
 
   isValidItem = () => {
-    return this.state.item.text.trim() !== '' &&
-           this.state.item.location.trim() !== '' &&
-           this.state.item.address.trim() !== '';
+    return this.state.temp_item.text.trim() !== '' &&
+      this.state.temp_item.location.trim() !== '' &&
+      this.state.temp_item.address.trim() !== '';
   }
 
   handleSubmit = (e) => {
@@ -31,32 +31,31 @@ export default class ItemInput extends Component {
     // make sure fields are not empty
     if (this.isValidItem()) {
       // Add new item
-      const item = {
-        ...this.state.item,
+      const temp_item = {
+        ...this.state.temp_item,
         key: Date.now(),
-        address: this.state.item.address.trim().toLowerCase(),
-        location: this.state.item.location.trim().toLowerCase(),
-        text: this.state.item.text.trim().toLowerCase(),
+        address: this.state.temp_item.address.trim().toLowerCase(),
+        location: this.state.temp_item.location.trim().toLowerCase(),
+        text: this.state.temp_item.text.trim().toLowerCase(),
       };
 
-      // get coordinate from address entered using HERE Geocoder API
-      apiServices.getCoordinates(item.address)
+      // get coordinates from address entered using HERE Geocoder API
+      apiServices.getCoordinates(temp_item.address)
         .then(coordinates => {
           // add coordinate to address get address coordinates from resulting JSON object
-          item.coordinates = coordinates;
-
-          // add item to list of tasks in parent
-          this.props.onAddItem(item);
+          temp_item.coordinates = coordinates;
+          // add temp_item to list of tasks in parent
+          this.props.onAddItem(temp_item);
         })
         .catch(error => {
           console.log(error.message);
-          // could not get coordinates so just add item with null coordinates
-          this.props.onAddItem(item);
+          // could not get coordinates so just add temp_item with null coordinates
+          this.props.onAddItem(temp_item);
         });
 
       // reset state variables of text, location, address
       this.setState({
-        item: {
+        temp_item: {
           text: '',
           location: '',
           address: '',
@@ -72,13 +71,13 @@ export default class ItemInput extends Component {
   }
 
   handleInput = (e) => {
-    const item = { ...this.state.item };
+    const temp_item = { ...this.state.temp_item };
 
-    // update item property from input
-    item[e.target.name] = e.target.value;
+    // update temp_item property from input
+    temp_item[e.target.name] = e.target.value;
 
     this.setState({
-      item,
+      temp_item,
     });
   }
 
@@ -93,7 +92,7 @@ export default class ItemInput extends Component {
               type="text"
               placeholder="Task (eg, Get Groceries)"
               name="text"
-              value={this.state.item.text}
+              value={this.state.temp_item.text}
               onChange={this.handleInput}
             />
 
@@ -102,7 +101,7 @@ export default class ItemInput extends Component {
               type="text"
               placeholder="Location (eg, Supermarket)"
               name="location"
-              value={this.state.item.location}
+              value={this.state.temp_item.location}
               onChange={this.handleInput}
             />
 
@@ -111,7 +110,7 @@ export default class ItemInput extends Component {
               type="text"
               placeholder="Address (eg 123 Fake Street, Knoxville, TN 37912)"
               name="address"
-              value={this.state.item.address}
+              value={this.state.temp_item.address}
               onChange={this.handleInput}
             />
 
@@ -131,7 +130,7 @@ export default class ItemInput extends Component {
           onFilterTaskLocations={this.props.onFilterTaskLocations}
           onFilterDistLocations={this.props.onFilterDistLocations}
         />
-    </div>
+      </div>
     )
   }
 }

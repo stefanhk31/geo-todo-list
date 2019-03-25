@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import MapGL, { Marker, NavigationControl } from 'react-map-gl';
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
+import { userInfo } from 'os';
 
 const token = process.env.REACT_APP_API_KEY;
+
+//set navigation controls
+const navStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  padding: '10px'
+};
 
 //set initial viewport parameters
 const initViewport = {
@@ -13,15 +22,8 @@ const initViewport = {
   height: window.innerHeight - 1
 }
 
-//set navigation controls
-const navStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  padding: '10px'
-};
-
 class Map extends Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -31,22 +33,28 @@ class Map extends Component {
     };
   }
 
-  // Set map to user's location on load
-  componentDidUpdate() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userLatitude = position.coords.latitude
-          const userLongitude = position.coords.longitude
-          this.setState({
-            viewport: {
-              ...initViewport,
-              latitude: userLatitude,
-              longitude: userLongitude,
-            }
-          })
-        }
-      )
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  //Update viewport if user coordinates have been received
+  focusMapOnUserCoordinates() {
+    if (this._isMounted) {
+      this.props.getUserCoordinates().then(position => {
+        const userLatitude = position.coords.latitude
+        const userLongitude = position.coords.longitude
+        this.setState({
+          viewport: {
+            ...initViewport,
+            latitude: userLatitude,
+            longitude: userLongitude,
+          }
+        })
+      })
     }
   }
 
@@ -57,7 +65,6 @@ class Map extends Component {
         coordinates: props.coordinates,
       };
     }
-
     return null;
   }
 
@@ -84,6 +91,8 @@ class Map extends Component {
 
   render() {
     const { viewport, coordinates } = this.state;
+
+    this.focusMapOnUserCoordinates();
 
     return (
       <MapGL
