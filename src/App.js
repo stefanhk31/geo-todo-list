@@ -8,7 +8,7 @@ import apiServices from './api-services/apiServices';
 
 class App extends Component {
   _isMounted = false;
-  
+
   constructor(props) {
     super(props);
 
@@ -22,7 +22,7 @@ class App extends Component {
           coordinates: {
             latitude: 35.94268,
             longitude: -83.98353,
-          },
+          }
         }
       ],
       utk: [
@@ -34,15 +34,15 @@ class App extends Component {
           coordinates: {
             latitude: 35.9526,
             longitude: -83.92647,
-          },
+          }
         }
       ],
     };
 
     this.state = {
-      items: initTasks,
+      items: '',
       filterKey: 'All',
-      filterDist: '',
+      filterDist: '99999',
       user: {
         latitude: null,
         longitude: null
@@ -53,7 +53,7 @@ class App extends Component {
   // Store geolocation API in a Promise, update them in state
   getUserCoordinates() {
     return new Promise((res, rej) => {
-      navigator.geolocation.getCurrentPosition(res, rej);
+      navigator.geolocation.getCurrentPosition(res, rej, { enableHighAccuracy: true });
     })
   }
 
@@ -71,7 +71,7 @@ class App extends Component {
   // Set user location into state on load
   componentDidMount() {
     this._isMounted = true;
-    
+
     if (this._isMounted && navigator.geolocation) {
       this.getUserCoordinates()
         .then(data => this.setUserCoordinatesToState(data))
@@ -93,13 +93,31 @@ class App extends Component {
     }
 
     const currentItem = { ...item };
+    const taskCoordinates = [
+      currentItem.coordinates.longitude,
+      currentItem.coordinates.latitude
+    ]
+    const userCoordinates = [
+      this.state.user.longitude,
+      this.state.user.latitude
+    ]
 
-    // update state with new item
-    this.setState({
-      items,
-      currentItem,
-    });
-  }
+    Object.defineProperty(items, currentItem.location, {
+      value: [currentItem],
+      writable: true
+    })
+
+    //fetch distance between user and task coordinates
+    apiServices.getMatrixDistances(userCoordinates, taskCoordinates)
+      .then(distance => {
+        currentItem.distance = distance
+        // update state with new item
+        this.setState({
+          items,
+          currentItem
+        });
+      });
+  };
 
   handleDeleteItem = item => {
     let allItems = { ...this.state.items };
@@ -152,44 +170,29 @@ class App extends Component {
     return coordinates;
   }
 
-  getDistances = (coordinates) => {
-    apiServices.getMatrixDistances([this.state.user.longitude, this.state.user.latitude], coordinates)
-  }
-
-  // get distance between coordinates and user location using Mapbox Matrix API
-
-
-
-  /*Add coordinates of tasks to an array to look up distances
-  storeTaskCoordinates() {
-    let taskCoordinates = []
-    
-    const length = Object.keys(this.state.items).length;
-    for (let i = 0; i < length; i++) {
-      if (this.state.items[i].hasOwnProperty("coordinates")) {
-        taskCoordinates.push(this.state.items[i].coordinates)
-      }
-      console.log(taskCoordinates)
-    }
-  } */
-
   render() {
+    let items = Object.values(this.state.items).flat();
     let filteredItems;
     let coordinates;
+    let filterDist = this.state.filterDist
+    let filterKey = this.state.filterKey
+  
+    //Filter out tasks based on filter dropdown
+    filteredItems = items.filter(item => item.distance < filterDist)
+    //How to take this new array and only display those values?
 
     // Get filteredItems and coordinates
-    if (this.state.filterKey === 'All') {
+    if (filterKey === 'All') {
       filteredItems = Object.assign({}, this.state.items);
       coordinates = this.getCoordinates('All');
     } else {
       const obj = {};
-      obj[this.state.filterKey] = [...this.state.items[this.state.filterKey]];
+      obj[filterKey] = [...this.state.items[filterKey]];
       filteredItems = obj;
-      coordinates = this.getCoordinates(this.state.filterKey);
+      coordinates = this.getCoordinates(filterKey);
     }
 
-    //Get distance matrix
-    this.getDistances(coordinates);
+
 
     return (
       <div className="App">
@@ -211,7 +214,7 @@ class App extends Component {
           />
         </div>
         <div className="map-container">
-          <Map 
+          <Map
             coordinates={coordinates}
             getUserCoordinates={this.getUserCoordinates}
           />

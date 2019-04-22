@@ -1,5 +1,5 @@
 const BASE_URL_HERE = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${process.env.REACT_APP_APP_ID}&app_code=${process.env.REACT_APP_APP_CODE}`;
-const BASE_URL_MAPBOX = `https://api.mapbox.com/directions/v5/mapbox/driving/`;
+const BASE_URL_MAPBOX = `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/`;
 const token = process.env.REACT_APP_API_KEY;
 
 const apiServices = {
@@ -31,48 +31,30 @@ const apiServices = {
       });
     return coordinates;
   },
+  //Need to associate each distance value with the task/location it corresponds to 
   async getMatrixDistances(userCoordinates = [], taskCoordinates = []) {
     let user = userCoordinates.join(',') + ';';
-    let tasks = taskCoordinates.map(task => Object.values(task)).flat().reverse()   //.join(',') + ';';
-    const length = tasks.length;
-    for (let i = 0; i < length; i++) {
-      if (i + 1 === length) {
-        tasks[i] += '?'
-      } else if (i % 2 !== 0 && i + 1 !== length) {
-        tasks[i] += ';'
-      } else {
-        tasks[i] += ',';
-      }
-    }
-    tasks = tasks.join('');
+    let tasks = taskCoordinates.join(',') + '?'; 
 
-    let mapbox_url = `${BASE_URL_MAPBOX}${user}${tasks}access_token=${token}`;
+    let mapbox_url = `${BASE_URL_MAPBOX}${user}${tasks}sources=0&annotations=distance&access_token=${token}`;
 
     const distances = await fetch(mapbox_url)
       .then(response => response.json())
       .then(data => {
-        // check for good status
-        // If no waypoints are defined, return null
-        if (!data.routes) return null;
-        console.log(data)
+        // check for good status; if no data, return null
+        if (!data.distances) return null;
+
+        const distances = data.distances[0]
+          .slice(1)
+          .map(d => d / 1609.344);
+        return distances[0];
 
       })
       .catch(error => {
         return null;
       });
-    return distances;
+    return distances; 
   }
 }
-
-/*
-  
-  let url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLongitude}%2C${userLatitude}%3B`
-
-  coordinates.forEach(function(element) {
-    url += `${element.longitude}%2C${element.latitude}%3B`
-  })
-  url += `.json?${token}`
-}
-*/
 
 export default apiServices;

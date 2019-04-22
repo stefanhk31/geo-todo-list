@@ -12,7 +12,7 @@ export default class ItemInput extends Component {
         address: '',
         location: '',
         text: '',
-        coordinates: [],
+        coordinates: []
       },
       isValid: true
     }
@@ -59,7 +59,7 @@ export default class ItemInput extends Component {
           text: '',
           location: '',
           address: '',
-          coordinates: [],
+          coordinates: []
         },
         isValid: true,
       });
