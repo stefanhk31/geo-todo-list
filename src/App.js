@@ -40,7 +40,7 @@ class App extends Component {
     };
 
     this.state = {
-      items: '',
+      items: {},
       filterKey: 'All',
       filterDist: '99999',
       user: {
@@ -82,15 +82,17 @@ class App extends Component {
     this._isMounted = false;
   }
 
-  //Add items to state when user inputs
+  //Add items to state when user inputs: NNEED TO FIX--NOT ACCEPTING MULTIPLE TASKS FOR ONE LOCATION
   handleAddItem = item => {
-    const items = { ...this.state.items };
+    const items = this.state.items;
+    const isLocationInState = items.hasOwnProperty(item.location)
 
-    if (this.state.items.hasOwnProperty(item.location)) {
-      items[item.location].push(item);
+    if (isLocationInState) {
+      items[item.location].push(item)
     } else {
       items[item.location] = [item];
     }
+    console.log(items[item.location].length) //ONLY ALLOWS MAX OF TWO
 
     const currentItem = { ...item };
     const taskCoordinates = [
@@ -151,7 +153,7 @@ class App extends Component {
     })
   }
 
-  //Get coordinates of address entered for new location
+  //Get coordinates of address entered for new location: re-write to render filteredItems and not this.state.items
   getCoordinates = (location) => {
     let coordinates = [];
     const mapTasks = task => ({
@@ -177,18 +179,24 @@ class App extends Component {
     let filterDist = this.state.filterDist
     let filterKey = this.state.filterKey
   
-    //Filter out tasks based on filter dropdown
+    //NEED TO RE-WRITE FILTERING FUNCTIONALITY
+    //1. Filter all by filterDist
+    //2. Filter by location if filterKey !== All
+
+    /*Filter out tasks based on filter dropdown
     filteredItems = items.filter(item => item.distance < filterDist)
-    //How to take this new array and only display those values?
+    let isFilteredItem = filteredItems.forEach(function(item) {
+      this.getCoordinates(item)
+    }); */
 
     // Get filteredItems and coordinates
     if (filterKey === 'All') {
-      filteredItems = Object.assign({}, this.state.items);
+      filteredItems = Object.assign({}, this.state.items); //put filtered items here?
       coordinates = this.getCoordinates('All');
     } else {
       const obj = {};
       obj[filterKey] = [...this.state.items[filterKey]];
-      filteredItems = obj;
+      filteredItems = obj; 
       coordinates = this.getCoordinates(filterKey);
     }
 
