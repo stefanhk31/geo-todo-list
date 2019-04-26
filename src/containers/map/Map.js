@@ -1,93 +1,113 @@
 import React, { Component } from 'react';
-import MapGL, { NavigationControl, Marker } from 'react-map-gl';
-import DeckGL, { GeoJsonLayer } from "deck.gl";
-import Geocoder from "react-map-gl-geocoder";
+import MapGL, { Marker, NavigationControl } from 'react-map-gl';
+import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
+import { userInfo } from 'os';
 
 const token = process.env.REACT_APP_API_KEY;
 
+//set navigation controls
+const navStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  padding: '10px'
+};
+
+//set initial viewport parameters
 const initViewport = {
   latitude: 0,
   longitude: 0,
   zoom: 12,
   width: window.innerWidth,
-  height: window.innerHeight
+  height: window.innerHeight - 1
 }
 
 class Map extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
       viewport: initViewport,
-      searchResultLayer: null
+      coordinates: [],
     };
   }
 
-  mapRef = React.createRef()
-
   componentDidMount() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userLatitude = position.coords.latitude
-          const userLongitude = position.coords.longitude
-          this.setState({
-            viewport: {
-              ...initViewport,
-              latitude: userLatitude,
-              longitude: userLongitude,
-            }
-          })
-        }
-      )
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  //Update viewport if user coordinates have been received
+  focusMapOnUserCoordinates() {
+    if (this._isMounted) {
+      this.props.getUserCoordinates().then(position => {
+        const userLatitude = position.coords.latitude
+        const userLongitude = position.coords.longitude
+        this.setState({
+          viewport: {
+            ...initViewport,
+            latitude: userLatitude,
+            longitude: userLongitude,
+          }
+        })
+      })
     }
   }
 
-  handleOnResult = e => {
-    this.setState({
-      searchResultLayer: new GeoJsonLayer({
-        id: "search-result",
-        data: e.result.geometry,
-        getFillColor: [255, 0, 0, 128],
-        getRadius: 1000,
-        pointRadiusMinPixels: 10,
-        pointRadiusMaxPixels: 10
-      })
-    });
+  //Update state if an address has been entered
+  static getDerivedStateFromProps(props, state) {
+    if (props.coordinates !== state.coordinates) {
+      return {
+        coordinates: props.coordinates,
+      };
+    }
+    return null;
+  }
+
+  _updateViewport = (viewport) => {
+    this.setState({ viewport })
   };
 
-  render() {
-    const { viewport, searchResultLayer } = this.state;
+  //Create marker for every location on list 
+  _renderMarkers = (point, index) => {
+    return (
+      <Marker
+        key={`marker-${index}`}
+        latitude={point.latitude}
+        longitude={point.longitude}
+        offsetLeft={-point.latitude * .25}
+        offsetTop={-point.latitude * .75}
+      >
+        <i
+          className="fas fa-map-pin fa-2x todo-map-marker"
+        ></i>
+      </Marker>
+    )
+  }
 
-    const updateViewport = (viewport) => {
-      this.setState({ viewport })
-    };
+  render() {
+    const { viewport, coordinates } = this.state;
+
+    this.focusMapOnUserCoordinates();
 
     return (
-      <div className="map-container" id="map">
-        <MapGL
-          {...viewport}
-          ref={this.mapRef}
-          mapStyle='mapbox://styles/mapbox/streets-v9'
-          mapboxApiAccessToken={token}
-          onViewportChange={updateViewport}
-        >
+      <MapGL
+        {...viewport}
+        mapStyle='mapbox://styles/mapbox/streets-v9'
+        mapboxApiAccessToken={token}
+        onViewportChange={this._updateViewport}
+      >
+        {coordinates.map(this._renderMarkers)}
 
-          <div className="geocoder">
-            <Geocoder
-              mapRef={this.mapRef}
-              onResult={this.handleOnResult}
-              onViewportChange={updateViewport}
-              mapboxApiAccessToken={token}
-              position="top-right"
-            />
-          </div>
+        <div className="nav" style={navStyle}>
+          <NavigationControl onViewportChange={this._updateViewport} />
+        </div>
 
-          <DeckGL
-            {...viewport}
-            layers={[searchResultLayer]}
-          />
-        </MapGL>
-      </div>
+      </MapGL>
     );
   }
 }
