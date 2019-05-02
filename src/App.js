@@ -73,7 +73,6 @@ class App extends Component {
       items,
       currentItem
     });
-
   };
 
   handleDeleteItem = item => {
@@ -110,39 +109,34 @@ class App extends Component {
 
   //Get coordinates of address entered for new location: re-write to render filteredItems and not this.state.items
   getCoordinates = (location) => {
+    let items = Object.values(this.state.items).flat();
     let coordinates = [];
+    let filterDist = this.state.filterDist
+    const itemsWithinDistance = items.filter(item => item.distance <= filterDist);
+
     const mapTasks = task => ({
       latitude: task.coordinates.latitude,
       longitude: task.coordinates.longitude,
     });
 
     if (location === 'All') {
-      const itemValues = Object.values(this.state.items); // convert items object to array of values
+      const itemValues = [itemsWithinDistance]; 
+
+      // convert items object to array of values
       coordinates = itemValues.map(loc => loc.map(mapTasks))
         .reduce((acc, curr) => acc.concat(curr), []); // flatten nested arrays
     } else {
-      const tasks = this.state.items[location];
-      coordinates = tasks.map(mapTasks);
+      //make tasks filter out all of [itemsWithinDistance] where location !== filterKey
+      const tasks = itemsWithinDistance.filter(item => item.location === location) 
+      coordinates = tasks.map(mapTasks) 
     }
     return coordinates;
   }
 
   render() {
-    let items = Object.values(this.state.items).flat();
     let filteredItems;
     let coordinates;
-    let filterDist = this.state.filterDist
     let filterKey = this.state.filterKey
-
-    //NEED TO RE-WRITE FILTERING FUNCTIONALITY
-    //1. Filter all by filterDist
-    //2. Filter by location if filterKey !== All
-
-    /*Filter out tasks based on filter dropdown
-    filteredItems = items.filter(item => item.distance < filterDist)
-    let isFilteredItem = filteredItems.forEach(function(item) {
-      this.getCoordinates(item)
-    }); */
 
     // Get filteredItems and coordinates
     if (filterKey === 'All') {
@@ -153,9 +147,7 @@ class App extends Component {
       obj[filterKey] = [...this.state.items[filterKey]];
       filteredItems = obj;
       coordinates = this.getCoordinates(filterKey);
-    }
-
-
+    } 
 
     return (
       <div className="App">

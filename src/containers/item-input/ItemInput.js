@@ -68,7 +68,6 @@ export default class ItemInput extends Component {
             );
 
           // add temp_item to list of tasks in parent
-          console.log(temp_item)
           this.props.onAddItem(temp_item);
         })
         .catch(error => {
