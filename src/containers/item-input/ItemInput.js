@@ -3,17 +3,20 @@ import React, { Component } from 'react'
 import apiServices from '../../api-services/apiServices';
 import FilterSelect from '../../components/filterSelect/FilterSelect';
 
+const initTemp = {
+  address: '',
+  location: '',
+  text: '',
+  coordinates: [],
+  distance: ''
+}
+
 export default class ItemInput extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      temp_item: {
-        address: '',
-        location: '',
-        text: '',
-        coordinates: []
-      },
+      temp_item: initTemp,
       isValid: true
     }
   }
@@ -42,25 +45,40 @@ export default class ItemInput extends Component {
       // get coordinates from address entered using HERE Geocoder API
       apiServices.getCoordinates(temp_item.address)
         .then(coordinates => {
-          // add coordinate to address get address coordinates from resulting JSON object
+          // add coordinate to address & get address coordinates from resulting JSON object
           temp_item.coordinates = coordinates;
+
+          //fetch distance between user and task coordinates
+          const taskCoordinates = [
+            temp_item.coordinates.longitude,
+            temp_item.coordinates.latitude
+          ]
+          const userCoordinates = [
+            this.props.user.longitude,
+            this.props.user.latitude
+          ]
+      
+          apiServices.getMatrixDistances(userCoordinates, taskCoordinates)
+            .then(distance => {
+              temp_item.distance = distance;
+            })
+            .catch(error => {
+              console.log(error.message)
+            }
+            );
+
           // add temp_item to list of tasks in parent
+          console.log(temp_item)
           this.props.onAddItem(temp_item);
         })
         .catch(error => {
-          console.log(error.message);
-          // could not get coordinates so just add temp_item with null coordinates
-          this.props.onAddItem(temp_item);
-        });
-
-      // reset state variables of text, location, address
+          console.log(error.message)
+        }
+        ); 
+      
+      // reset state variables of text, location, address, distance
       this.setState({
-        temp_item: {
-          text: '',
-          location: '',
-          address: '',
-          coordinates: []
-        },
+        temp_item: initTemp,
         isValid: true,
       });
     } else {

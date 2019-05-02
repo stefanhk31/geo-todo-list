@@ -12,33 +12,6 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    const initTasks = {
-      bearden: [
-        {
-          key: 1547216683236,
-          address: "37919",
-          location: "bearden",
-          text: "eat",
-          coordinates: {
-            latitude: 35.94268,
-            longitude: -83.98353,
-          }
-        }
-      ],
-      utk: [
-        {
-          key: 1547219983236,
-          address: "37996",
-          location: "utk",
-          text: "go to school",
-          coordinates: {
-            latitude: 35.9526,
-            longitude: -83.92647,
-          }
-        }
-      ],
-    };
-
     this.state = {
       items: {},
       filterKey: 'All',
@@ -82,8 +55,10 @@ class App extends Component {
     this._isMounted = false;
   }
 
-  //Add items to state when user inputs: NNEED TO FIX--NOT ACCEPTING MULTIPLE TASKS FOR ONE LOCATION
+  //Add items to state when user inputs
   handleAddItem = item => {
+    const currentItem = { ...item };
+
     const items = this.state.items;
     const isLocationInState = items.hasOwnProperty(item.location)
 
@@ -92,33 +67,13 @@ class App extends Component {
     } else {
       items[item.location] = [item];
     }
-    console.log(items[item.location].length) //ONLY ALLOWS MAX OF TWO
 
-    const currentItem = { ...item };
-    const taskCoordinates = [
-      currentItem.coordinates.longitude,
-      currentItem.coordinates.latitude
-    ]
-    const userCoordinates = [
-      this.state.user.longitude,
-      this.state.user.latitude
-    ]
+    // update state with new item
+    this.setState({
+      items,
+      currentItem
+    });
 
-    Object.defineProperty(items, currentItem.location, {
-      value: [currentItem],
-      writable: true
-    })
-
-    //fetch distance between user and task coordinates
-    apiServices.getMatrixDistances(userCoordinates, taskCoordinates)
-      .then(distance => {
-        currentItem.distance = distance
-        // update state with new item
-        this.setState({
-          items,
-          currentItem
-        });
-      });
   };
 
   handleDeleteItem = item => {
@@ -178,7 +133,7 @@ class App extends Component {
     let coordinates;
     let filterDist = this.state.filterDist
     let filterKey = this.state.filterKey
-  
+
     //NEED TO RE-WRITE FILTERING FUNCTIONALITY
     //1. Filter all by filterDist
     //2. Filter by location if filterKey !== All
@@ -196,7 +151,7 @@ class App extends Component {
     } else {
       const obj = {};
       obj[filterKey] = [...this.state.items[filterKey]];
-      filteredItems = obj; 
+      filteredItems = obj;
       coordinates = this.getCoordinates(filterKey);
     }
 
