@@ -27,7 +27,7 @@ export default function FilterSelect(props) {
         value={props.filterDist}
         onChange={props.onFilterDistLocations}
       >
-        <option value="All"></option>       
+        <option value="99999"></option>       
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="25">25</option>
