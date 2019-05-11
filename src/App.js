@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import ItemInput from './containers/item-input/ItemInput';
 import Map from './containers/map/Map';
 import List from './components/list/List';
-import apiServices from './api-services/apiServices';
+import ErrorBoundary from './ErrorBoundary';
 
 class App extends Component {
   _isMounted = false;
@@ -121,14 +121,20 @@ class App extends Component {
 
     if (location === 'All') {
       const itemValues = [itemsWithinDistance]; 
-
       // convert items object to array of values
       coordinates = itemValues.map(loc => loc.map(mapTasks))
         .reduce((acc, curr) => acc.concat(curr), []); // flatten nested arrays
     } else {
       //make tasks filter out all of [itemsWithinDistance] where location !== filterKey
       const tasks = itemsWithinDistance.filter(item => item.location === location) 
-      coordinates = tasks.map(mapTasks) 
+      
+      //safeguard to catch if there are no items under the selected location
+      if (!tasks[0].coordinates) {
+        location = 'All';
+      } else {
+        coordinates = tasks.map(mapTasks) 
+      }
+
     }
     return coordinates;
   }
@@ -140,18 +146,18 @@ class App extends Component {
 
     // Get filteredItems and coordinates
     if (filterKey === 'All') {
-      filteredItems = Object.assign({}, this.state.items); //put filtered items here?
+      filteredItems = Object.assign({}, this.state.items); 
       coordinates = this.getCoordinates('All');
     } else {
       const obj = {};
       obj[filterKey] = [...this.state.items[filterKey]];
       filteredItems = obj;
-      coordinates = this.getCoordinates(filterKey);
+      coordinates = obj[filterKey].length !== 0 ? this.getCoordinates(filterKey) : [];
     } 
 
     return (
       <div className="App">
-        <div className="todo-container">
+       <div className="todo-container">
           <ItemInput
             user={this.state.user}
             coordinates={coordinates}
@@ -162,12 +168,14 @@ class App extends Component {
             filterKey={this.state.filterKey}
             filterDist={this.state.filterDist}
           />
-
+          <ErrorBoundary>
           <List
             items={filteredItems}
             onDeleteItem={this.handleDeleteItem}
           />
+          </ErrorBoundary>
         </div>
+
         <div className="map-container">
           <Map
             coordinates={coordinates}
