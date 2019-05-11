@@ -143,16 +143,18 @@ class App extends Component {
     let filteredItems;
     let coordinates;
     let filterKey = this.state.filterKey
-
     // Get filteredItems and coordinates
     if (filterKey === 'All') {
       filteredItems = Object.assign({}, this.state.items); 
+      coordinates = this.getCoordinates('All');
+    } else if (filterKey !== 'All' && !this.state.items[filterKey]) {
+      filterKey = 'All';
       coordinates = this.getCoordinates('All');
     } else {
       const obj = {};
       obj[filterKey] = [...this.state.items[filterKey]];
       filteredItems = obj;
-      coordinates = obj[filterKey].length !== 0 ? this.getCoordinates(filterKey) : [];
+      coordinates = this.getCoordinates(filterKey);
     } 
 
     return (
