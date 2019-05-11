@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import MapGL, { Marker, NavigationControl } from 'react-map-gl';
 import '../../../node_modules/mapbox-gl/dist/mapbox-gl.css';
-import { userInfo } from 'os';
 
 const token = process.env.REACT_APP_API_KEY;
 
