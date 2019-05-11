@@ -127,13 +127,8 @@ class App extends Component {
     } else {
       //make tasks filter out all of [itemsWithinDistance] where location !== filterKey
       const tasks = itemsWithinDistance.filter(item => item.location === location) 
+      coordinates = tasks.map(mapTasks) 
       
-      //safeguard to catch if there are no items under the selected location
-      if (!tasks[0].coordinates) {
-        location = 'All';
-      } else {
-        coordinates = tasks.map(mapTasks) 
-      }
 
     }
     return coordinates;
