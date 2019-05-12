@@ -7,7 +7,7 @@ export default function FilterSelect(props) {
 
   return (
     <div className="list__filter">
-      <label className="filter__label" htmlFor="filter">Filter by location:</label>
+      <label className="filter__label" htmlFor="filter">Filter by specific location:</label>
       <select
         className="filter__select"
         name="filter"
@@ -19,7 +19,7 @@ export default function FilterSelect(props) {
         { options }
       </select>
 
-      <label className="filter__label" htmlFor="distance">Show locations within&nbsp; 
+      <label className="filter__label" htmlFor="distance">Only show markers within&nbsp; 
       <select
         className="filter__select"
         name="distance"

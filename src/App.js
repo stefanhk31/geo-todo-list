@@ -168,6 +168,7 @@ class App extends Component {
           <ErrorBoundary>
           <List
             items={filteredItems}
+            filterDist={this.state.filterDist}
             onDeleteItem={this.handleDeleteItem}
           />
           </ErrorBoundary>

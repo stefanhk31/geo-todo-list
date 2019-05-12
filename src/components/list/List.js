@@ -4,9 +4,15 @@ import ListItem from './list-item/ListItem';
 export default function List(props) {
   const list = [];
 
-  for (let key in props.items) {
+
+
+  for (let key in props.items) {    
+    //let values = Object.values(props.items).map(item => Object.values(item));
+    let values = (Object.values(props.items).flat())[0];
+    let distance = values.distance;
+
     list.push((
-      <li className="list__item" key={key}>
+      <li className={`list__item ${distance > props.filterDist ? "hidden" : ""}`} key={key}>
         <h5 className="list-item__heading">{ key.toUpperCase() }</h5>
         <ul className="list">
           {
