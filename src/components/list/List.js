@@ -7,7 +7,6 @@ export default function List(props) {
 
 
   for (let key in props.items) {    
-    //let values = Object.values(props.items).map(item => Object.values(item));
     let values = (Object.values(props.items).flat())[0];
     let distance = values.distance;
 
