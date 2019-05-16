@@ -7,7 +7,7 @@ export default function FilterSelect(props) {
 
   return (
     <div className="list__filter">
-      <label className="filter__label" htmlFor="filter">Filter by specific location:</label>
+      <label className="filter__label" htmlFor="filter">Filter by location:</label>
       <select
         className="filter__select"
         name="filter"
