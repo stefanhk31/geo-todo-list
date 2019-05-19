@@ -172,7 +172,11 @@ class App extends Component {
             onDeleteItem={this.handleDeleteItem}
           />
           </ErrorBoundary>
+
+
         </div>
+
+
 
         <div className="map-container">
           <Map
@@ -180,6 +184,7 @@ class App extends Component {
             getUserCoordinates={this.getUserCoordinates}
           />
         </div>
+        
       </div>
     );
   }
